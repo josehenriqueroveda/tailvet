@@ -1,6 +1,5 @@
 import useSWR from "swr";
-import fetcher from "app/utils/fetcher";
-import "app/styles/globals.css";
+import fetcher from "src/utils/fetcher";
 
 import {
   LuDatabase,
