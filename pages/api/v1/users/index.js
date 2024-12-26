@@ -1,9 +1,9 @@
+import { verifyToken } from "src/utils/middleware";
 import database from "src/infra/database";
 import bcrypt from "bcrypt";
 
 export default async function handler(request, response) {
   const allowedMethods = ["GET", "POST"];
-
   if (!allowedMethods.includes(request.method)) {
     return response.status(405).json({
       error: `Method "${request.method}" not allowed`,
@@ -11,6 +11,8 @@ export default async function handler(request, response) {
   }
 
   try {
+    await verifyToken(request);
+
     switch (request.method) {
       case "GET":
         await handleGet(request, response);
