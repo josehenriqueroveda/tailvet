@@ -11,5 +11,27 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: [
+      {
+        tailvetTheme: {
+          primary: "#38bdf8",
+          secondary: "#93c5fd",
+          accent: "#3b82f6",
+          neutral: "#cffafe",
+          "base-100": "#ffffff",
+          info: "#fef08a",
+          success: "#4ade80",
+          warning: "#fdba74",
+          error: "#ef4444",
+        },
+      },
+    ],
+    darkTheme: "dark",
+    base: true,
+    styled: true,
+    utils: true,
+    prefix: "",
+  },
 };
