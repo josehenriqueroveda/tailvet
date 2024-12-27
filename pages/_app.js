@@ -1,15 +1,44 @@
 import "../src/styles/globals.css";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
-  if (router.pathname === "/login") {
-    return <Component {...pageProps} />;
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("authToken="))
+        ?.split("=")[1];
+      if (!token && router.pathname !== "/login") {
+        router.push("/login");
+      } else {
+        setAuthenticated(true);
+      }
+      setLoading(false);
+    };
+    checkAuth();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
   }
 
-  return (
+  if (!authenticated && router.pathname !== "/login") {
+    return null; // Redirecionamento está em andamento
+  }
+
+  return router.pathname === "/login" ? (
+    <Component {...pageProps} />
+  ) : (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">

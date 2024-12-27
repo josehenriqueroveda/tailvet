@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/v1/auth/login", {
@@ -22,10 +24,12 @@ export default function Login() {
 
       const { token } = await response.json();
       document.cookie = `authToken=${token}; path=/; max-age=2592000;`;
-      await router.push("/");
+      router.push("/");
     } catch (error) {
       console.error(error);
       alert("Login falhou!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,8 +87,16 @@ export default function Login() {
             />
           </label>
         </div>
-        <button type="submit" className="btn btn-primary w-full">
-          Login
+        <button
+          type="submit"
+          className="btn btn-primary w-full"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <span className="loading loading-dots loading-xs"></span>
+          ) : (
+            "Login"
+          )}
         </button>
       </form>
     </div>

@@ -52,7 +52,7 @@ export default async function handler(request, response) {
     response.setHeader(
       "Set-Cookie",
       cookie.serialize("authToken", token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         maxAge: 30 * 24 * 60 * 60, // 30 days
         path: "/",
