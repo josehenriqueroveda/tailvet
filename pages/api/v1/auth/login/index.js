@@ -1,6 +1,7 @@
 import database from "src/infra/database";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import cookie from "cookie";
 
 const SECRET = process.env.JWT_SECRET || "testsecret";
 
@@ -47,6 +48,16 @@ export default async function handler(request, response) {
     const token = jwt.sign({ id: user.id, email: user.email }, SECRET, {
       expiresIn: "30d",
     });
+
+    response.setHeader(
+      "Set-Cookie",
+      cookie.serialize("authToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: "/",
+      }),
+    );
 
     return response.status(200).json({ token });
   } catch (error) {
