@@ -1,4 +1,3 @@
-import { verifyServerToken } from "src/utils/auth.server.js";
 import database from "src/infra/database";
 import bcrypt from "bcrypt";
 
