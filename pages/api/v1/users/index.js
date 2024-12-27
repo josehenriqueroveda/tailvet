@@ -1,4 +1,4 @@
-import { verifyToken } from "src/utils/middleware";
+import { verifyServerToken } from "src/utils/auth.server.js";
 import database from "src/infra/database";
 import bcrypt from "bcrypt";
 
@@ -11,7 +11,7 @@ export default async function handler(request, response) {
   }
 
   try {
-    await verifyToken(request);
+    // await verifyServerToken(request);
 
     switch (request.method) {
       case "GET":
