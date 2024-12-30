@@ -52,7 +52,7 @@ async function getToken() {
 }
 
 describe("POST /api/v1/users", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating an user", async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",

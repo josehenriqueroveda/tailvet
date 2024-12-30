@@ -1,4 +1,4 @@
-import orchestrator from "tests/orchestrator.js";
+import orchestrator from "tests/orchestrator";
 import database from "src/infra/database";
 import bcrypt from "bcrypt";
 
@@ -6,6 +6,7 @@ let sessionToken;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
+  await orchestrator.waitForTable("customers");
   await orchestrator.waitForTable("users");
   await dummyUser();
   sessionToken = await getToken();
@@ -51,26 +52,37 @@ async function getToken() {
   return responseBody.token;
 }
 
-describe("GET /api/v1/users", () => {
+describe("POST /api/v1/customers", () => {
   describe("Authenticated user", () => {
-    test("Get the authenticated user", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "GET",
+    test("Creating a customer", async () => {
+      const response = await fetch("http://localhost:3000/api/v1/customers", {
+        method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionToken}`,
         },
+        body: JSON.stringify({
+          name: "Michael Kyle",
+          gender: "masculino",
+          cell_phone: "(99)99999-9999",
+          address: "Rua St1, Numero 999, Centro, São Paulo-SP",
+        }),
       });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
 
       const responseBody = await response.json();
-      console.dir(responseBody);
 
       expect(typeof responseBody).toBe("object");
-      expect(responseBody.name).toBe("Jane Doe");
-      expect(responseBody.email).toBe("jane@test.com");
+      expect(responseBody.name).toBe("Michael Kyle");
+      expect(responseBody.gender).toBe("masculino");
+      expect(responseBody.email).toBe(null);
+      expect(responseBody.phone).toBe(null);
+      expect(responseBody.cell_phone).toBe("(99)99999-9999");
+      expect(responseBody.address).toBe(
+        "Rua St1, Numero 999, Centro, São Paulo-SP",
+      );
     }, 5000);
   });
 });
