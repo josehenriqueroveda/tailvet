@@ -51,30 +51,26 @@ async function getToken() {
   return responseBody.token;
 }
 
-describe("POST /api/v1/users", () => {
+describe("GET /api/v1/users", () => {
   describe("Anonymous user", () => {
-    test("Creating an user", async () => {
+    test("Get the authenticated user", async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
+        method: "GET",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionToken}`,
         },
-        body: JSON.stringify({
-          name: "John Doe",
-          email: "jd@test.com",
-          password: "jd-PWD01",
-        }),
       });
 
-      expect(response.status).toBe(201);
+      expect(response.status).toBe(200);
 
       const responseBody = await response.json();
+      console.dir(responseBody);
 
       expect(typeof responseBody).toBe("object");
-      expect(responseBody.user.name).toBe("John Doe");
-      expect(responseBody.user.email).toBe("jd@test.com");
+      expect(responseBody.name).toBe("Jane Doe");
+      expect(responseBody.email).toBe("jane@test.com");
     }, 5000);
   });
 });

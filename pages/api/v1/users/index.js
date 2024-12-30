@@ -1,5 +1,6 @@
 import database from "src/infra/database";
 import bcrypt from "bcrypt";
+import { verifyServerToken } from "src/utils/auth.server";
 
 export default async function handler(request, response) {
   const allowedMethods = ["GET", "POST"];
@@ -10,24 +11,40 @@ export default async function handler(request, response) {
   }
 
   try {
-    // await verifyServerToken(request);
+    const authenticatedUser = await verifyServerToken(request);
 
     switch (request.method) {
       case "GET":
-        await handleGet(request, response);
+        await handleGet(request, response, authenticatedUser);
         break;
       case "POST":
         await handlePost(request, response);
         break;
     }
   } catch (error) {
-    console.log(error);
-    response.status(500).json({ error: "Internal Server Error" });
+    console.error(error);
+    response
+      .status(500)
+      .json({ error: error.message || "Internal Server Error" });
   }
 }
 
-async function handleGet(request, response) {
-  return { request, response };
+async function handleGet(request, response, authenticatedUser) {
+  try {
+    const result = await database.query({
+      text: "SELECT id, name, email FROM users WHERE id = $1",
+      values: [authenticatedUser.id],
+    });
+
+    if (result.rows.length === 0) {
+      return response.status(404).json({ error: "User not found" });
+    }
+
+    return response.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ error: "Error fetching user" });
+  }
 }
 
 async function handlePost(request, response) {
@@ -54,7 +71,7 @@ async function handlePost(request, response) {
       user: result.rows[0],
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error.code === "23505") {
       return response.status(409).json({ message: "Email already exists" });
     }

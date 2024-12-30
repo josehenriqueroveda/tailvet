@@ -27,7 +27,7 @@ async function dummyUser() {
 
     return result.rows[0];
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 

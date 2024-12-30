@@ -61,7 +61,7 @@ export default async function handler(request, response) {
 
     return response.status(200).json({ token });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     response.status(500).json({ error: "Internal Server Error" });
   }
 }
