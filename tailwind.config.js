@@ -16,7 +16,7 @@ module.exports = {
     themes: [
       {
         tailvetTheme: {
-          primary: "#38bdf8",
+          primary: "#0099ff",
           secondary: "#93c5fd",
           accent: "#3b82f6",
           neutral: "#cffafe",
