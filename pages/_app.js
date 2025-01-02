@@ -48,10 +48,19 @@ export default function App({ Component, pageProps }) {
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu bg-primary text-base-content min-h-full w-80 p-4">
           <li>
-            <Link href="/">Home</Link>
+            <Link className="text-base text-white" href="/">
+              Página Inicial
+            </Link>
           </li>
           <li>
-            <Link href="/status">Status</Link>
+            <Link className="text-base text-white" href="/customers">
+              Clientes
+            </Link>
+          </li>
+          <li>
+            <Link className="text-base text-white" href="/status">
+              Status
+            </Link>
           </li>
         </ul>
       </div>
