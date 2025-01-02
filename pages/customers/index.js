@@ -22,7 +22,7 @@ export default function CustomersList() {
 
   if (!data) {
     return (
-      <div class="flex flex-row min-h-screen justify-center items-center">
+      <div className="flex flex-row min-h-screen justify-center items-center">
         <span className="loading loading-dots loading-lg"></span>
       </div>
     );
@@ -54,7 +54,7 @@ export default function CustomersList() {
         <div className="grid flex mt-2">
           <button
             onClick={() => router.push(`/customers/new`)}
-            className="btn btn-sm btn-success ml-6"
+            className="btn btn-sm btn-accent text-white ml-6"
           >
             <LuPlus />
             Cadastrar Cliente
@@ -80,17 +80,15 @@ export default function CustomersList() {
               <td>
                 <button
                   onClick={() => router.push(`/customers/${customer.id}`)}
-                  className="btn btn-sm btn-info"
+                  className="btn btn-sm btn-default"
                 >
                   <LuEye />
-                  Ver
                 </button>
                 <button
                   onClick={() => router.push(`/customers/${customer.id}/edit`)}
-                  className="btn btn-sm btn-warning ml-2"
+                  className="btn btn-sm btn-secondary ml-2"
                 >
                   <LuPencil />
-                  Editar
                 </button>
               </td>
             </tr>
