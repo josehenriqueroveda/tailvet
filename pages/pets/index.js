@@ -74,14 +74,13 @@ export default function PetsList() {
         </thead>
         <tbody>
           {filteredPets.map((pet) => {
-            const age = calculateAge(pet.birth_date, pet.age);
             return (
               <tr key={pet.id}>
                 <td>{pet.owner_name || "Desconhecido"}</td>
                 <td>{pet.name}</td>
                 <td>{pet.species}</td>
                 <td>{pet.gender}</td>
-                <td>{age}</td>
+                <td>{pet.age}</td>
                 <td>
                   <button
                     onClick={() => router.push(`/customers/${pet.id}`)}
@@ -103,17 +102,4 @@ export default function PetsList() {
       </table>
     </div>
   );
-}
-
-function calculateAge(birthDate, fallbackAge) {
-  if (!birthDate) return `${fallbackAge || "N/A"}`;
-
-  const birth = new Date(birthDate);
-  const now = new Date();
-  const diffYears = now.getFullYear() - birth.getFullYear();
-  const diffMonths = now.getMonth() - birth.getMonth();
-  const months = diffMonths < 0 ? 12 + diffMonths : diffMonths;
-  const years = diffMonths < 0 ? diffYears - 1 : diffYears;
-
-  return `${years} ano${years > 1 ? "s" : ""} e ${months} ${months > 1 ? "meses" : "mês"}`;
 }
