@@ -7,6 +7,7 @@ export default function EditCustomer() {
   const router = useRouter();
   const { id } = router.query;
   const [form, setForm] = useState(null);
+  const [pets, setPets] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -16,6 +17,12 @@ export default function EditCustomer() {
       })
         .then((res) => res.json())
         .then((data) => setForm(data));
+
+      fetch(`/api/v1/pets?owner_id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => setPets(data));
     }
   }, [id]);
 
@@ -152,6 +159,30 @@ export default function EditCustomer() {
           </button>
         </div>
       </form>
+
+      <div className="mt-8">
+        <h2 className="text-lg font-bold mb-2">Pets do Cliente</h2>
+        <table className="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Espécie</th>
+              <th>Gênero</th>
+              <th>Idade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pets.map((pet) => (
+              <tr key={pet.id}>
+                <td>{pet.name}</td>
+                <td>{pet.species}</td>
+                <td>{pet.gender}</td>
+                <td>{pet.age || "N/A"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
