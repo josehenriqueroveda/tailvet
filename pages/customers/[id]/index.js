@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
-import { LuX } from "react-icons/lu";
+import { LuCircleX } from "react-icons/lu";
 
 export default function ViewCustomer() {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function ViewCustomer() {
     return (
       <div className="p-6">
         <div role="alert" className="alert alert-error">
-          <LuX className="text-white" />
+          <LuCircleX className="text-white" />
           <span className="text-white">Erro! Falha ao carregar o cliente.</span>
         </div>
       </div>

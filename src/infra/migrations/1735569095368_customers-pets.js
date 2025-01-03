@@ -41,7 +41,7 @@ exports.up = (pgm) => {
     species: { type: "varchar(100)", notNull: true },
     breed: { type: "varchar(100)" },
     birth_date: { type: "date" },
-    age: { type: "int" },
+    age: { type: "varchar(100)" },
     weight: { type: "decimal(5, 2)" },
     color: { type: "varchar(100)" },
     is_neutered: { type: "boolean", notNull: true, default: false }, // Castrado ou não

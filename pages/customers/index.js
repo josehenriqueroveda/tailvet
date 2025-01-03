@@ -2,7 +2,7 @@ import useSWR from "swr";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { LuEye, LuPencil, LuPlus, LuSearch, LuX } from "react-icons/lu";
+import { LuEye, LuPencil, LuPlus, LuSearch, LuCircleX } from "react-icons/lu";
 
 export default function CustomersList() {
   const { data, error } = useSWR("/api/v1/customers", authenticatedFetcher);
@@ -13,7 +13,7 @@ export default function CustomersList() {
     return (
       <div className="p-6">
         <div role="alert" className="alert alert-error">
-          <LuX className="text-white" />
+          <LuCircleX className="text-white" />
           <span className="text-white">Erro! Falha ao buscar clientes.</span>
         </div>
       </div>
@@ -36,7 +36,7 @@ export default function CustomersList() {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Clientes</h1>
+      <h1 className="text-2xl font-bold mb-4">Clientes</h1>
       <div className="flex flex-col md:flex-row max-w-xl">
         <div className="grid flex-grow">
           <label className="input input-bordered flex items-center">

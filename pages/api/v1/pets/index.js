@@ -39,7 +39,12 @@ async function handleGet(request, response) {
 
   if (id) {
     const result = await database.query({
-      text: "SELECT * FROM pets WHERE id = $1",
+      text: `
+        SELECT pets.*, customers.name AS owner_name
+        FROM pets
+        LEFT JOIN customers ON pets.owner_id = customers.id
+        WHERE pets.id = $1
+      `,
       values: [id],
     });
 
@@ -49,14 +54,23 @@ async function handleGet(request, response) {
     return response.status(200).json(result.rows[0]);
   } else if (owner_id) {
     const result = await database.query({
-      text: "SELECT * FROM pets WHERE owner_id = $1",
+      text: `
+        SELECT pets.*, customers.name AS owner_name
+        FROM pets
+        LEFT JOIN customers ON pets.owner_id = customers.id
+        WHERE pets.owner_id = $1
+      `,
       values: [owner_id],
     });
 
     return response.status(200).json(result.rows || []);
   } else {
     const result = await database.query({
-      text: "SELECT * FROM pets",
+      text: `
+        SELECT pets.*, customers.name AS owner_name
+        FROM pets
+        LEFT JOIN customers ON pets.owner_id = customers.id
+      `,
     });
 
     return response.status(200).json(result.rows || []);
