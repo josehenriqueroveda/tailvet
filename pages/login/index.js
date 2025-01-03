@@ -39,7 +39,9 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm p-4 bg-white shadow-lg rounded"
       >
-        <h2 className="text-lg font-semibold mb-4">Login</h2>
+        <h2 className="text-xl font-sans font-bold text-primary mb-4">
+          Tailvet
+        </h2>
         <div className="mb-4">
           <label className="block text-sm mb-2">Email</label>
           <label className="input input-bordered flex items-center gap-2">
@@ -89,7 +91,7 @@ export default function Login() {
         </div>
         <button
           type="submit"
-          className="btn btn-primary w-full"
+          className="btn btn-primary w-full text-white"
           disabled={isLoading}
         >
           {isLoading ? (

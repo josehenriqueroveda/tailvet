@@ -35,8 +35,9 @@ export default async function handler(request, response) {
 }
 
 async function handleGet(request, response) {
-  const { id } = request.query;
+  const { id, search } = request.query;
 
+  // Se o parâmetro id for fornecido, busca por ID específico
   if (id) {
     const result = await database.query({
       text: "SELECT * FROM customers WHERE id = $1 AND is_active = true",
@@ -48,8 +49,18 @@ async function handleGet(request, response) {
     }
     return response.status(200).json(result.rows[0]);
   } else {
+    // Se o parâmetro search for fornecido, filtra por nome
+    let queryText = "SELECT * FROM customers WHERE is_active = true";
+    let queryValues = [];
+
+    if (search) {
+      queryText += " AND LOWER(name) LIKE LOWER($1)";
+      queryValues.push(`%${search}%`);
+    }
+
     const result = await database.query({
-      text: "SELECT * FROM customers WHERE is_active = true",
+      text: queryText,
+      values: queryValues,
     });
 
     return response.status(200).json(result.rows || []);

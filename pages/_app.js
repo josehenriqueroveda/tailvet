@@ -2,6 +2,12 @@ import "../src/styles/globals.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import {
+  LuArrowUpDown,
+  LuHouse,
+  LuPawPrint,
+  LuPersonStanding,
+} from "react-icons/lu";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -49,17 +55,22 @@ export default function App({ Component, pageProps }) {
         <ul className="menu bg-primary text-base-content min-h-full w-80 p-4">
           <li>
             <Link className="text-base text-white" href="/">
-              Página Inicial
+              <LuHouse /> Página Inicial
             </Link>
           </li>
           <li>
             <Link className="text-base text-white" href="/customers">
-              Clientes
+              <LuPersonStanding /> Clientes
+            </Link>
+          </li>
+          <li>
+            <Link className="text-base text-white" href="/pets">
+              <LuPawPrint /> Pets
             </Link>
           </li>
           <li>
             <Link className="text-base text-white" href="/status">
-              Status
+              <LuArrowUpDown /> Status
             </Link>
           </li>
         </ul>
