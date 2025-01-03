@@ -37,33 +37,34 @@ export default function ViewCustomer() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Customer Details</h1>
+      <h1 className="text-xl font-bold mb-4">Detalhes do Cliente</h1>
       <div className="card bg-base-100 shadow-md p-4 max-w-xl">
         <p>
-          <strong>Name:</strong> {customerData.name}
+          <strong>Nome:</strong> {customerData.name}
         </p>
         <p>
-          <strong>Gender:</strong> {customerData.gender || "N/A"}
+          <strong>Gênero:</strong> {customerData.gender || "N/A"}
         </p>
         <p>
           <strong>Email:</strong> {customerData.email}
         </p>
         <p>
-          <strong>Phone:</strong> {customerData.phone || "N/A"}
+          <strong>Telefone:</strong> {customerData.phone || "N/A"}
         </p>
         <p>
-          <strong>Cell Phone:</strong> {customerData.cell_phone || "N/A"}
+          <strong>Celular/Whatsapp:</strong> {customerData.cell_phone || "N/A"}
         </p>
         <p>
-          <strong>Address:</strong> {customerData.address || "N/A"}
+          <strong>Endereço:</strong> {customerData.address || "N/A"}
         </p>
         <p>
-          <strong>Active:</strong> {customerData.is_active ? "Yes" : "No"}
+          <strong>Ativo no sistema?</strong>{" "}
+          {customerData.is_active ? "Sim" : "Não"}
         </p>
       </div>
       <div className="mt-8">
         <h2 className="text-lg font-bold mb-4">Pets do Cliente</h2>
-        <table className="table table-zebra w-full">
+        <table className="table w-full">
           <thead>
             <tr>
               <th>Nome</th>

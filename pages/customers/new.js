@@ -41,7 +41,7 @@ export default function NewCustomer() {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Cadastrar Cliente</h1>
+      <h1 className="text-2xl font-bold mb-4">Cadastrar Cliente</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Nome</label>

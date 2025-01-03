@@ -150,39 +150,50 @@ export default function EditCustomer() {
             />
           </label>
         </div>
-        <div className="max-w-xl">
-          <button
-            type="submit"
-            className="btn btn-primary mt-6 text-white w-32"
-          >
-            Salvar
-          </button>
+
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-2">Pets do Cliente</h2>
+          <table className="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Espécie</th>
+                <th>Gênero</th>
+                <th>Idade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pets.map((pet) => (
+                <tr key={pet.id}>
+                  <td>{pet.name}</td>
+                  <td>{pet.species}</td>
+                  <td>{pet.gender}</td>
+                  <td>{pet.age || "N/A"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="max-w-xl flex space-x-6">
+          <div className="max-w-xl">
+            <button
+              type="submit"
+              className="btn btn-primary mt-6 text-white w-32"
+            >
+              Salvar
+            </button>
+          </div>
+          <div className="max-w-xl">
+            <button
+              className="btn btn-info mt-6 w-32"
+              onClick={() => router.back()}
+            >
+              Voltar
+            </button>
+          </div>
         </div>
       </form>
-
-      <div className="mt-8">
-        <h2 className="text-lg font-bold mb-2">Pets do Cliente</h2>
-        <table className="table table-zebra w-full">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Espécie</th>
-              <th>Gênero</th>
-              <th>Idade</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pets.map((pet) => (
-              <tr key={pet.id}>
-                <td>{pet.name}</td>
-                <td>{pet.species}</td>
-                <td>{pet.gender}</td>
-                <td>{pet.age || "N/A"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 }
