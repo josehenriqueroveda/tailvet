@@ -83,13 +83,13 @@ export default function PetsList() {
                 <td>{pet.age}</td>
                 <td>
                   <button
-                    onClick={() => router.push(`/customers/${pet.id}`)}
+                    onClick={() => router.push(`/pets/${pet.id}`)}
                     className="btn btn-sm btn-default"
                   >
                     <LuEye />
                   </button>
                   <button
-                    onClick={() => router.push(`/customers/${pet.id}/edit`)}
+                    onClick={() => router.push(`/pets/${pet.id}/edit`)}
                     className="btn btn-sm btn-secondary ml-2"
                   >
                     <LuPencil />

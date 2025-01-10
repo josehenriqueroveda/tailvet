@@ -1,30 +1,30 @@
-import { useState } from "react";
+// edit.js
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
-import AsyncSelect from "react-select/async";
 import InputMask from "react-input-mask";
 import moment from "moment";
 
-export default function NewPet() {
+export default function EditPet() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    name: "",
-    gender: "",
-    species: "",
-    breed: "",
-    birth_date: "",
-    age: "",
-    weight: "",
-    color: "",
-    is_neutered: false,
-    is_active: true,
-    owner_id: "",
-  });
+  const { id } = router.query;
+  const [form, setForm] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      const token = Cookies.get("authToken");
+      fetch(`/api/v1/pets?id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => setForm(data));
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "birth_date") {
-      const isValidDate = moment(value, "DD/MM/YYYY").isValid();
+      const isValidDate = moment(value, "DD/MM/YYYY", true).isValid();
       setForm({
         ...form,
         [name]: isValidDate
@@ -36,78 +36,44 @@ export default function NewPet() {
     }
   };
 
-  const handleSelectChange = (selectedOption) => {
-    setForm({ ...form, owner_id: selectedOption?.value || "" });
-  };
-
   const handleCheckboxChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.checked });
-  };
-
-  const fetchOwners = async (inputValue) => {
-    if (!inputValue) return [];
-    const token = Cookies.get("authToken");
-
-    try {
-      const response = await fetch(`/api/v1/customers?search=${inputValue}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch owners");
-      }
-
-      const owners = await response.json();
-      return owners.map((owner) => ({
-        value: owner.id,
-        label: owner.name,
-      }));
-    } catch (error) {
-      console.error("Error fetching owners:", error);
-      return [];
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = Cookies.get("authToken");
+    const response = await fetch(`/api/v1/pets/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(form),
+    });
 
-    try {
-      const response = await fetch("/api/v1/pets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      });
-
-      if (response.ok) {
-        router.push("/pets");
-      } else {
-        console.error("Failed to create pet");
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    if (response.ok) {
+      router.push("/pets");
+    } else {
+      console.error("Failed to update pet");
     }
   };
 
+  if (!form) {
+    return (
+      <div className="flex flex-row min-h-screen justify-center items-center">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Cadastrar Pet</h1>
+      <h1 className="text-2xl font-bold mb-4">Editar Pet</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Proprietário</label>
-          <AsyncSelect
-            placeholder="Buscar proprietário..."
-            isClearable
-            isSearchable
-            loadOptions={fetchOwners}
-            onChange={handleSelectChange}
-            className="react-select-container"
-            classNamePrefix="react-select"
-            noOptionsMessage={() => "Nenhum proprietário encontrado"}
-          />
+          <p>{form.owner_name}</p>
         </div>
 
         <div className="max-w-xl">
@@ -234,23 +200,33 @@ export default function NewPet() {
           </label>
         </div>
 
+        <div className="max-w-xl">
+          <label className="flex items-center space-x-2">
+            <span>Cadastro Ativo?</span>
+            <input
+              type="checkbox"
+              name="is_active"
+              checked={form.is_active}
+              onChange={handleCheckboxChange}
+              className="checkbox"
+            />
+            <div>{form.is_active ? "Sim" : "Não"}</div>
+          </label>
+        </div>
+
         <div className="max-w-xl flex space-x-6">
-          <div className="max-w-xl">
-            <button
-              type="submit"
-              className="btn btn-primary mt-6 text-white w-32"
-            >
-              Salvar
-            </button>
-          </div>
-          <div className="max-w-xl">
-            <button
-              className="btn btn-info mt-6 w-32"
-              onClick={() => router.back()}
-            >
-              Voltar
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="btn btn-primary mt-6 text-white w-32"
+          >
+            Salvar
+          </button>
+          <button
+            className="btn btn-info mt-6 w-32"
+            onClick={() => router.back()}
+          >
+            Voltar
+          </button>
         </div>
       </form>
     </div>

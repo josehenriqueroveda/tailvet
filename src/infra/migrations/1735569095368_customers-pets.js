@@ -45,6 +45,11 @@ exports.up = (pgm) => {
     weight: { type: "decimal(5, 2)" },
     color: { type: "varchar(100)" },
     is_neutered: { type: "boolean", notNull: true, default: false }, // Castrado ou não
+    is_active: {
+      type: "boolean",
+      notNull: true,
+      default: true,
+    },
     owner_id: {
       type: "integer",
       notNull: true,
