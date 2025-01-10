@@ -66,7 +66,6 @@ describe("GET /api/v1/users", () => {
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
-      console.dir(responseBody);
 
       expect(typeof responseBody).toBe("object");
       expect(responseBody.name).toBe("Jane Doe");

@@ -140,7 +140,7 @@ export default function EditCustomer() {
 
         <div className="max-w-xl">
           <label className="flex items-center space-x-2">
-            <span>Cliente Ativo?</span>
+            <span>Cadastro Ativo?</span>
             <input
               type="checkbox"
               name="is_active"

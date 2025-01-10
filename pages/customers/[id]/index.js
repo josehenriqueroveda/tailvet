@@ -22,7 +22,9 @@ export default function ViewCustomer() {
       <div className="p-6">
         <div role="alert" className="alert alert-error">
           <LuCircleX className="text-white" />
-          <span className="text-white">Erro! Falha ao carregar o cliente.</span>
+          <span className="text-white">
+            Erro! Falha ao carregar dados do cliente.
+          </span>
         </div>
       </div>
     );
@@ -58,7 +60,7 @@ export default function ViewCustomer() {
           <strong>Endereço:</strong> {customerData.address || "N/A"}
         </p>
         <p>
-          <strong>Ativo no sistema?</strong>{" "}
+          <strong>Cadastro Ativo?</strong>{" "}
           {customerData.is_active ? "Sim" : "Não"}
         </p>
       </div>

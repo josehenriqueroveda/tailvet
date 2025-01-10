@@ -40,7 +40,7 @@ async function handleGet(request, response) {
   // Se o parâmetro id for fornecido, busca por ID específico
   if (id) {
     const result = await database.query({
-      text: "SELECT * FROM customers WHERE id = $1 AND is_active = true",
+      text: "SELECT * FROM customers WHERE id = $1",
       values: [id],
     });
 
