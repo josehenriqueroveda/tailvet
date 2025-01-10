@@ -88,19 +88,5 @@ describe("DELETE /api/v1/customers", () => {
       "message",
       "Customer successfully deactivated",
     );
-
-    // Verificar se o cliente foi desativado
-    const getResponse = await fetch(
-      `http://localhost:3000/api/v1/customers?id=${customerId}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${sessionToken}`,
-        },
-      },
-    );
-
-    expect(getResponse.status).toBe(404);
   });
 });

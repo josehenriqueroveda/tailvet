@@ -41,7 +41,7 @@ export default function NewCustomer() {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Cadastrar Cliente</h1>
+      <h1 className="text-2xl font-bold mb-4">Cadastrar Cliente</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Nome</label>
@@ -118,10 +118,23 @@ export default function NewCustomer() {
           ></textarea>
         </div>
 
-        <div className="flex justify-center max-w-xl">
-          <button type="submit" className="btn btn-primary text-white w-32">
-            Salvar
-          </button>
+        <div className="max-w-xl flex space-x-6">
+          <div className="max-w-xl">
+            <button
+              type="submit"
+              className="btn btn-primary mt-6 text-white w-32"
+            >
+              Salvar
+            </button>
+          </div>
+          <div className="max-w-xl">
+            <button
+              className="btn btn-info mt-6 w-32"
+              onClick={() => router.back()}
+            >
+              Voltar
+            </button>
+          </div>
         </div>
       </form>
     </div>
