@@ -1,4 +1,4 @@
-import "../src/styles/globals.css";
+import "src/styles/globals.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import {
   LuMenu,
   LuPawPrint,
   LuSheet,
+  LuSyringe,
   LuUser,
 } from "react-icons/lu";
 
@@ -91,8 +92,13 @@ export default function App({ Component, pageProps }) {
             </Link>
           </li>
           <li>
+            <Link className="text-base text-white" href="/vaccinations">
+              <LuSyringe /> {!isDrawerOpen ? null : "Vacinações"}
+            </Link>
+          </li>
+          <li>
             <Link className="text-base text-white" href="/services">
-              <LuSheet /> {!isDrawerOpen ? null : "Serviços"}
+              <LuSheet /> {!isDrawerOpen ? null : "Materiais e Serviços"}
             </Link>
           </li>
           <li>
