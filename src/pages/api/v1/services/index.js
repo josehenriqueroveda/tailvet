@@ -35,7 +35,7 @@ export default async function handler(request, response) {
 }
 
 async function handleGet(request, response) {
-  const { id, search } = request.query;
+  const { id, search, category } = request.query;
 
   if (id) {
     const result = await database.query({
@@ -54,6 +54,11 @@ async function handleGet(request, response) {
     if (search) {
       queryText += " AND LOWER(name) LIKE LOWER($1)";
       queryValues.push(`%${search}%`);
+    }
+
+    if (category) {
+      queryText += " AND LOWER(category) LIKE LOWER($1)";
+      queryValues.push(`%${category}%`);
     }
 
     const result = await database.query({
