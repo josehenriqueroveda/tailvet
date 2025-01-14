@@ -23,6 +23,10 @@ exports.up = (pgm) => {
       references: '"services"',
       onDelete: "CASCADE",
     },
+    price: {
+      type: "decimal(10, 2)",
+      notNull: true,
+    },
     dose: {
       type: "varchar(20)",
       notNull: true,
@@ -40,10 +44,6 @@ exports.up = (pgm) => {
       type: "text",
       notNull: false,
     },
-    total_value: {
-      type: "decimal(10, 2)",
-      notNull: true,
-    },
     created_at: {
       type: "timestamp",
       notNull: true,
@@ -55,38 +55,6 @@ exports.up = (pgm) => {
       default: pgm.func("current_timestamp"),
     },
   });
-
-  pgm.createTable("vaccination_extra_services", {
-    id: "id",
-    vaccination_id: {
-      type: "integer",
-      notNull: true,
-      references: '"vaccinations"',
-      onDelete: "CASCADE",
-    },
-    service_id: {
-      type: "integer",
-      notNull: true,
-      references: '"services"',
-      onDelete: "CASCADE",
-    },
-    service_value: {
-      type: "decimal(10, 2)",
-      notNull: true,
-    },
-    created_at: {
-      type: "timestamp",
-      notNull: true,
-      default: pgm.func("current_timestamp"),
-    },
-    updated_at: {
-      type: "timestamp",
-      notNull: true,
-      default: pgm.func("current_timestamp"),
-    },
-  });
-
-  pgm.createIndex("vaccination_extra_services", "vaccination_id");
 };
 
 /**
