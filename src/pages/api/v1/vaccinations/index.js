@@ -95,71 +95,32 @@ async function handlePost(request, response) {
   const {
     pet_id,
     vaccine_id,
+    price,
     dose,
     application_date,
     next_dose_date,
     notes,
-    extra_services = [],
   } = request.body;
 
   if (!pet_id || !vaccine_id || !dose || !application_date) {
     return response.status(400).json({ error: "Required fields missing" });
   }
 
-  const vaccineResult = await database.query({
-    text: "SELECT price FROM services WHERE id = $1",
-    values: [vaccine_id],
-  });
-
-  if (vaccineResult.rows.length === 0) {
-    return response.status(404).json({ error: "Vaccine not found" });
-  }
-
-  const vaccinePrice = vaccineResult.rows[0].price;
-  let totalValue = parseFloat(vaccinePrice);
-
-  const vaccinationResult = await database.query({
+  await database.query({
     text: `
-      INSERT INTO vaccinations (pet_id, vaccine_id, dose, application_date, next_dose_date, notes, total_value)
+      INSERT INTO vaccinations (pet_id, vaccine_id, price, dose, application_date, next_dose_date, notes)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *
     `,
     values: [
       pet_id,
       vaccine_id,
+      price,
       dose,
       application_date,
       next_dose_date,
       notes,
-      totalValue,
     ],
-  });
-
-  const vaccinationId = vaccinationResult.rows[0].id;
-
-  for (const extra of extra_services) {
-    const serviceResult = await database.query({
-      text: "SELECT price FROM services WHERE id = $1",
-      values: [extra.service_id],
-    });
-
-    if (serviceResult.rows.length === 0) continue;
-
-    const servicePrice = serviceResult.rows[0].price;
-    totalValue += parseFloat(servicePrice);
-
-    await database.query({
-      text: `
-        INSERT INTO vaccination_extra_services (vaccination_id, service_id, service_value)
-        VALUES ($1, $2, $3)
-      `,
-      values: [vaccinationId, extra.service_id, servicePrice],
-    });
-  }
-
-  await database.query({
-    text: "UPDATE vaccinations SET total_value = $1 WHERE id = $2",
-    values: [totalValue, vaccinationId],
   });
 
   return response
@@ -168,9 +129,55 @@ async function handlePost(request, response) {
 }
 
 async function handlePut(request, response) {
-  return response.status(501).json({ error: "PUT not implemented yet" });
+  const { id } = request.query;
+  const updates = request.body;
+
+  if (!id) {
+    return response.status(400).json({ error: "Vaccination ID is required" });
+  }
+
+  const result = await database.query({
+    text: `
+      UPDATE vaccinations 
+      SET pet_id = $1, vaccine_id = $2, dose = $3, application_date = $4, next_dose_date = $5, notes = $6
+      WHERE id = $7
+      RETURNING *
+    `,
+    values: [
+      updates.pet_id,
+      updates.vaccine_id,
+      updates.dose,
+      updates.application_date,
+      updates.next_dose_date,
+      updates.notes,
+      id,
+    ],
+  });
+
+  if (result.rows.length === 0) {
+    return response.status(404).json({ error: "Vaccination not found" });
+  }
+
+  return response.status(200).json(result.rows[0]);
 }
 
 async function handleDelete(request, response) {
-  return response.status(501).json({ error: "DELETE not implemented yet" });
+  const { id } = request.query;
+
+  if (!id) {
+    return response.status(400).json({ error: "Vaccination ID is required" });
+  }
+
+  const result = await database.query({
+    text: `DELETE FROM vaccinations WHERE id = $1 RETURNING *`,
+    values: [id],
+  });
+
+  if (result.rows.length === 0) {
+    return response.status(404).json({ error: "Vaccination not found" });
+  }
+
+  return response
+    .status(200)
+    .json({ message: "Vaccination deleted successfully" });
 }
