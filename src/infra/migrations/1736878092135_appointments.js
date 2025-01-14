@@ -11,6 +11,12 @@ exports.shorthands = undefined;
 exports.up = (pgm) => {
   pgm.createTable("appointments", {
     id: "id",
+    pet_id: {
+      type: "integer",
+      notNull: true,
+      references: "pets",
+      onDelete: "RESTRICT",
+    },
     appointment_date: {
       type: "date",
       notNull: true,
