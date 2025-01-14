@@ -14,41 +14,51 @@ export default function NewVaccination() {
     vaccination_date: "",
     dose: "",
     next_dose_date: "",
+    notes: "",
+    price: "",
   });
   const [pets, setPets] = useState([]);
   const [vaccines, setVaccines] = useState([]);
 
-  const fetchVaccines = async () => {
-    const token = Cookies.get("authToken");
-    try {
-      const response = await fetch(`/api/v1/services?category=vacina`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error("Failed to fetch vaccines");
-
-      const vaccinesData = await response.json();
-      const vaccineOptions = vaccinesData.map((vaccine) => ({
-        value: vaccine.id,
-        label: vaccine.name,
-      }));
-      setVaccines(vaccineOptions);
-    } catch (error) {
-      console.error("Error fetching vaccines:", error);
-      setVaccines([]);
-    }
-  };
-
   useEffect(() => {
+    const fetchVaccines = async () => {
+      const token = Cookies.get("authToken");
+      try {
+        const response = await fetch(`/api/v1/services?category=vacina`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) throw new Error("Failed to fetch vaccines");
+
+        const vaccinesData = await response.json();
+        const vaccineOptions = vaccinesData.map((vaccine) => ({
+          value: vaccine.id,
+          label: vaccine.name,
+          price: vaccine.price,
+        }));
+        setVaccines(vaccineOptions);
+      } catch (error) {
+        console.error("Error fetching vaccines:", error);
+        setVaccines([]);
+      }
+    };
+
     fetchVaccines();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+  const handleInputChange = (name, value) => {
+    setForm((prevForm) => ({ ...prevForm, [name]: value }));
+  };
+
+  const handleVaccineChange = (selectedOption) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      vaccine_id: selectedOption?.value || "",
+      price: selectedOption?.price || "",
+    }));
   };
 
   const handleOwnerChange = async (selectedOption) => {
-    setForm({ ...form, owner_id: selectedOption?.value || "" });
+    handleInputChange("owner_id", selectedOption?.value || "");
 
     if (selectedOption?.value) {
       const token = Cookies.get("authToken");
@@ -145,7 +155,7 @@ export default function NewVaccination() {
             isClearable
             options={pets}
             onChange={(option) =>
-              setForm({ ...form, pet_id: option?.value || "" })
+              handleInputChange("pet_id", option?.value || "")
             }
             className="react-select-container"
             classNamePrefix="react-select"
@@ -159,9 +169,7 @@ export default function NewVaccination() {
             placeholder="Buscar vacina..."
             isClearable
             options={vaccines}
-            onChange={(option) =>
-              setForm({ ...form, vaccine_id: option?.value || "" })
-            }
+            onChange={handleVaccineChange}
             className="react-select-container"
             classNamePrefix="react-select"
             noOptionsMessage={() => "Nenhuma vacina encontrada"}
@@ -169,10 +177,22 @@ export default function NewVaccination() {
         </div>
 
         <div className="max-w-xl">
+          <label className="block text-sm mb-2">Preço</label>
+          <input
+            type="number"
+            name="price"
+            placeholder="R$ 0,00"
+            value={form.price || null}
+            readOnly
+            className="input input-bordered w-full"
+          />
+        </div>
+
+        <div className="max-w-xl">
           <label className="block text-sm mb-2">Data de Vacinação</label>
           <InputMask
             mask="99/99/9999"
-            name="vaccination_date"
+            placeholder="DD/MM/YYYY"
             value={
               form.vaccination_date
                 ? moment(form.vaccination_date, "YYYY-MM-DD").format(
@@ -181,12 +201,10 @@ export default function NewVaccination() {
                 : ""
             }
             onChange={(e) =>
-              setForm({
-                ...form,
-                vaccination_date: moment(e.target.value, "DD/MM/YYYY").format(
-                  "YYYY-MM-DD",
-                ),
-              })
+              handleInputChange(
+                "vaccination_date",
+                moment(e.target.value, "DD/MM/YYYY").format("YYYY-MM-DD"),
+              )
             }
             className="input input-bordered w-full"
           />
@@ -197,9 +215,9 @@ export default function NewVaccination() {
           <input
             type="text"
             name="dose"
-            placeholder="Ex: 1ª Dose"
-            value={form.dose}
-            onChange={handleChange}
+            placeholder="Ex. 1a"
+            value={form.dose || ""}
+            onChange={(e) => handleInputChange("dose", e.target.value)}
             className="input input-bordered w-full"
           />
         </div>
@@ -208,22 +226,31 @@ export default function NewVaccination() {
           <label className="block text-sm mb-2">Data da Próxima Dose</label>
           <InputMask
             mask="99/99/9999"
-            name="next_dose_date"
+            placeholder="DD/MM/YYYY"
             value={
               form.next_dose_date
                 ? moment(form.next_dose_date, "YYYY-MM-DD").format("DD/MM/YYYY")
                 : ""
             }
             onChange={(e) =>
-              setForm({
-                ...form,
-                next_dose_date: moment(e.target.value, "DD/MM/YYYY").format(
-                  "YYYY-MM-DD",
-                ),
-              })
+              handleInputChange(
+                "next_dose_date",
+                moment(e.target.value, "DD/MM/YYYY").format("YYYY-MM-DD"),
+              )
             }
             className="input input-bordered w-full"
           />
+        </div>
+
+        <div className="max-w-xl">
+          <label className="block text-sm mb-2">Observações</label>
+          <textarea
+            name="notes"
+            placeholder="Comentários adicionais..."
+            value={form.notes || ""}
+            onChange={(e) => handleInputChange("notes", e.target.value)}
+            className="textarea textarea-bordered w-full"
+          ></textarea>
         </div>
 
         <div className="max-w-xl flex space-x-6">
