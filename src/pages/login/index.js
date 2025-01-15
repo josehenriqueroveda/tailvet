@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import GradientText from "src/components/GradientText";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,9 +40,14 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm p-4 bg-white shadow-lg rounded"
       >
-        <h2 className="text-xl font-sans font-bold text-primary mb-4">
+        <GradientText
+          colors={["#0099ff", "#5feeff", "#0099ff", "#5feeff", "#0099ff"]}
+          animationSpeed={6}
+          showBorder={false}
+          className="text-3xl font-sans font-bold mb-4"
+        >
           Tailvet
-        </h2>
+        </GradientText>
         <div className="mb-4">
           <label className="block text-sm mb-2">Email</label>
           <label className="input input-bordered flex items-center gap-2">
