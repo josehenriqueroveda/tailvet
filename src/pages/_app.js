@@ -8,6 +8,7 @@ import {
   LuMenu,
   LuPawPrint,
   LuSheet,
+  LuStethoscope,
   LuSyringe,
   LuUser,
 } from "react-icons/lu";
@@ -82,6 +83,16 @@ export default function App({ Component, pageProps }) {
             </Link>
           </li>
           <li>
+            <Link className="text-base text-white" href="/appointments">
+              <LuStethoscope /> {!isDrawerOpen ? null : "Atendimentos"}
+            </Link>
+          </li>
+          <li>
+            <Link className="text-base text-white" href="/vaccinations">
+              <LuSyringe /> {!isDrawerOpen ? null : "Vacinações"}
+            </Link>
+          </li>
+          <li>
             <Link className="text-base text-white" href="/customers">
               <LuUser /> {!isDrawerOpen ? null : "Clientes"}
             </Link>
@@ -89,11 +100,6 @@ export default function App({ Component, pageProps }) {
           <li>
             <Link className="text-base text-white" href="/pets">
               <LuPawPrint /> {!isDrawerOpen ? null : "Pets"}
-            </Link>
-          </li>
-          <li>
-            <Link className="text-base text-white" href="/vaccinations">
-              <LuSyringe /> {!isDrawerOpen ? null : "Vacinações"}
             </Link>
           </li>
           <li>

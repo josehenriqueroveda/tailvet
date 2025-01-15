@@ -1,3 +1,7 @@
 export default function Home() {
-  return <h1>Bem-vindo!</h1>;
+  return (
+    <div>
+      <div className="p-6 text-3xl font-sans font-bold mb-4">Company Name</div>
+    </div>
+  );
 }
