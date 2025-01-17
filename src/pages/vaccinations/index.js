@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
-import { LuCircleX, LuEye, LuPencil, LuPlus, LuSearch } from "react-icons/lu";
+import { LuCircleX, LuEye, LuPlus, LuSearch } from "react-icons/lu";
 
 export default function VaccinationsList() {
   const router = useRouter();
@@ -95,14 +95,6 @@ export default function VaccinationsList() {
                     className="btn btn-sm btn-default"
                   >
                     <LuEye />
-                  </button>
-                  <button
-                    onClick={() =>
-                      router.push(`/vaccinations/${vaccine.id}/edit`)
-                    }
-                    className="btn btn-sm btn-secondary ml-2"
-                  >
-                    <LuPencil />
                   </button>
                 </td>
               </tr>
