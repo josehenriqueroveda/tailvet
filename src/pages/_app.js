@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   LuArrowUpDown,
   LuHouse,
+  LuLogOut,
   LuMenu,
   LuPawPrint,
   LuSheet,
@@ -64,7 +65,7 @@ export default function App({ Component, pageProps }) {
   return router.pathname === "/login" ? (
     <Component {...pageProps} />
   ) : (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <div
         className={`${
           isDrawerOpen ? "w-80" : "w-16"
@@ -110,6 +111,11 @@ export default function App({ Component, pageProps }) {
           <li>
             <Link className="text-base text-white" href="/status">
               <LuArrowUpDown /> {!isDrawerOpen ? null : "Status"}
+            </Link>
+          </li>
+          <li className="mt-10">
+            <Link className="text-base text-white" href="/login">
+              <LuLogOut /> {!isDrawerOpen ? null : "Logout"}
             </Link>
           </li>
         </ul>

@@ -14,7 +14,9 @@ export default function AppointmentsList() {
       <div className="p-6">
         <div role="alert" className="alert alert-error">
           <LuCircleX className="text-white" />
-          <span className="text-white">Erro! Falha ao buscar vacinações.</span>
+          <span className="text-white">
+            Erro! Falha ao buscar atendimentos.
+          </span>
         </div>
       </div>
     );
@@ -57,7 +59,7 @@ export default function AppointmentsList() {
             className="btn btn-sm btn-accent text-white ml-6"
           >
             <LuPlus />
-            Cadastrar Vacinação
+            Cadastrar Atendimento
           </button>
         </div>
       </div>
