@@ -5,9 +5,11 @@ import Link from "next/link";
 import {
   LuArrowUpDown,
   LuHouse,
+  LuLogOut,
   LuMenu,
   LuPawPrint,
   LuSheet,
+  LuStethoscope,
   LuSyringe,
   LuUser,
 } from "react-icons/lu";
@@ -63,7 +65,7 @@ export default function App({ Component, pageProps }) {
   return router.pathname === "/login" ? (
     <Component {...pageProps} />
   ) : (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <div
         className={`${
           isDrawerOpen ? "w-80" : "w-16"
@@ -82,6 +84,16 @@ export default function App({ Component, pageProps }) {
             </Link>
           </li>
           <li>
+            <Link className="text-base text-white" href="/appointments">
+              <LuStethoscope /> {!isDrawerOpen ? null : "Atendimentos"}
+            </Link>
+          </li>
+          <li>
+            <Link className="text-base text-white" href="/vaccinations">
+              <LuSyringe /> {!isDrawerOpen ? null : "Vacinações"}
+            </Link>
+          </li>
+          <li>
             <Link className="text-base text-white" href="/customers">
               <LuUser /> {!isDrawerOpen ? null : "Clientes"}
             </Link>
@@ -92,11 +104,6 @@ export default function App({ Component, pageProps }) {
             </Link>
           </li>
           <li>
-            <Link className="text-base text-white" href="/vaccinations">
-              <LuSyringe /> {!isDrawerOpen ? null : "Vacinações"}
-            </Link>
-          </li>
-          <li>
             <Link className="text-base text-white" href="/services">
               <LuSheet /> {!isDrawerOpen ? null : "Materiais e Serviços"}
             </Link>
@@ -104,6 +111,11 @@ export default function App({ Component, pageProps }) {
           <li>
             <Link className="text-base text-white" href="/status">
               <LuArrowUpDown /> {!isDrawerOpen ? null : "Status"}
+            </Link>
+          </li>
+          <li className="mt-10">
+            <Link className="text-base text-white" href="/login">
+              <LuLogOut /> {!isDrawerOpen ? null : "Logout"}
             </Link>
           </li>
         </ul>

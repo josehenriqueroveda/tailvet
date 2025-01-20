@@ -4,9 +4,9 @@ import { useState } from "react";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
 import { LuCircleX, LuEye, LuPlus, LuSearch } from "react-icons/lu";
 
-export default function VaccinationsList() {
+export default function AppointmentsList() {
   const router = useRouter();
-  const { data, error } = useSWR("/api/v1/vaccinations", authenticatedFetcher);
+  const { data, error } = useSWR("/api/v1/appointments", authenticatedFetcher);
   const [search, setSearch] = useState("");
 
   if (error) {
@@ -14,7 +14,9 @@ export default function VaccinationsList() {
       <div className="p-6">
         <div role="alert" className="alert alert-error">
           <LuCircleX className="text-white" />
-          <span className="text-white">Erro! Falha ao buscar vacinações.</span>
+          <span className="text-white">
+            Erro! Falha ao buscar atendimentos.
+          </span>
         </div>
       </div>
     );
@@ -28,15 +30,15 @@ export default function VaccinationsList() {
     );
   }
 
-  const filteredVaccinations = data
-    .filter((vaccine) =>
-      vaccine.owner_name?.toLowerCase().includes(search.toLowerCase()),
+  const filteredAppointments = data
+    .filter((appointment) =>
+      appointment.owner_name?.toLowerCase().includes(search.toLowerCase()),
     )
     .sort((a, b) => a.owner_name?.localeCompare(b.owner_name));
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Lista de Vacinações</h1>
+      <h1 className="text-2xl font-bold mb-4">Lista de Atendimentos</h1>
       <div className="flex flex-col md:flex-row max-w-xl">
         <div className="grid flex-grow">
           <label className="input input-bordered flex items-center">
@@ -53,11 +55,11 @@ export default function VaccinationsList() {
 
         <div className="grid flex mt-2">
           <button
-            onClick={() => router.push(`/vaccinations/new`)}
+            onClick={() => router.push(`/appointments/new`)}
             className="btn btn-sm btn-accent text-white ml-6"
           >
             <LuPlus />
-            Cadastrar Vacinação
+            Cadastrar Atendimento
           </button>
         </div>
       </div>
@@ -66,32 +68,26 @@ export default function VaccinationsList() {
           <tr>
             <th>Proprietário</th>
             <th>Pet</th>
-            <th>Vacina</th>
-            <th>Data de Vacinação</th>
-            <th>Dose</th>
-            <th>Próxima Dose</th>
+            <th>Tipo de Atendimento</th>
+            <th>Data do Atendimento</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          {filteredVaccinations.map((vaccine) => {
+          {filteredAppointments.map((appointment) => {
             return (
-              <tr key={vaccine.id}>
-                <td>{vaccine.owner_name || "Desconhecido"}</td>
-                <td>{vaccine.pet_name}</td>
-                <td>{vaccine.vaccine_name}</td>
+              <tr key={appointment.id}>
+                <td>{appointment.owner_name || "Desconhecido"}</td>
+                <td>{appointment.pet_name}</td>
+                <td>{appointment.appointment_type}</td>
                 <td>
-                  {new Date(vaccine.vaccination_date).toLocaleDateString()}
-                </td>
-                <td>{vaccine.dose}</td>
-                <td>
-                  {vaccine.next_dose_date
-                    ? new Date(vaccine.next_dose_date).toLocaleDateString()
-                    : "Não Aplicável"}
+                  {new Date(appointment.appointment_date).toLocaleDateString()}
                 </td>
                 <td>
                   <button
-                    onClick={() => router.push(`/vaccinations/${vaccine.id}`)}
+                    onClick={() =>
+                      router.push(`/appointments/${appointment.id}`)
+                    }
                     className="btn btn-sm btn-default"
                   >
                     <LuEye />
