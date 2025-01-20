@@ -75,7 +75,6 @@ async function handleGet(request, response) {
         JOIN customers c ON p.owner_id = c.id
       `,
     });
-
     return response.status(200).json(result.rows || []);
   }
 }

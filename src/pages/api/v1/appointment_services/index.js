@@ -44,7 +44,8 @@ async function handleGet(request, response) {
           aps.*,
           s.name AS service_name,
           s.price AS service_price,
-          SUM(aps.price) OVER () AS total_price
+          s.category AS service_category,
+          SUM(aps.service_price) OVER () AS total_price
         FROM appointment_services aps
         JOIN services s ON aps.service_id = s.id
         WHERE aps.appointment_id = $1
@@ -61,7 +62,7 @@ async function handleGet(request, response) {
   } else if (service_id) {
     const result = await database.query({
       text: `
-        SELECT aps.*, s.name AS service_name, s.price AS service_price
+        SELECT aps.*, s.name AS service_name, s.price AS service_price, s.category AS service_category
         FROM appointment_services aps
         JOIN services s ON aps.service_id = s.id
         WHERE aps.service_id = $1
@@ -73,7 +74,7 @@ async function handleGet(request, response) {
   } else {
     const result = await database.query({
       text: `
-        SELECT aps.*, s.name AS service_name, s.price AS service_price
+        SELECT aps.*, s.name AS service_name, s.price AS service_price, s.category AS service_category
         FROM appointment_services aps
         JOIN services s ON aps.service_id = s.id
       `,
@@ -84,9 +85,15 @@ async function handleGet(request, response) {
 }
 
 async function handlePost(request, response) {
-  const { appointment_id, service_id, name, price } = request.body;
+  const { appointment_id, service_id, service_name, service_price } =
+    request.body;
 
-  if (!appointment_id || !service_id || !name || price === undefined) {
+  if (
+    !appointment_id ||
+    !service_id ||
+    !service_name ||
+    service_price === undefined
+  ) {
     return response.status(400).json({
       error: "Appointment ID, Service ID, Name, and Price are required",
     });
@@ -95,11 +102,11 @@ async function handlePost(request, response) {
   const result = await database.query({
     text: `
       INSERT INTO appointment_services
-      (appointment_id, service_id, name, price)
+      (appointment_id, service_id, service_name, service_price)
       VALUES ($1, $2, $3, $4)
       RETURNING *
     `,
-    values: [appointment_id, service_id, name, price],
+    values: [appointment_id, service_id, service_name, service_price],
   });
 
   return response.status(201).json(result.rows[0]);

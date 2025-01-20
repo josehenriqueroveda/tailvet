@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import AsyncSelect from "react-select/async";
 import Select from "react-select";
-import InputMask from "react-input-mask";
-import moment from "moment";
 
 export default function NewAppointment() {
   const router = useRouter();
@@ -15,8 +13,8 @@ export default function NewAppointment() {
     appointment_type: "",
     main_complaint: "",
     anamnesis: "",
-    temperature: 0.0,
-    weight: 0.0,
+    temperature: "",
+    weight: "",
     neurological_system: "",
     digestive_system: "",
     cardiorespiratory_system: "",
@@ -139,14 +137,14 @@ export default function NewAppointment() {
 
       // Step 2: Add extra services
       for (const service of extraServices) {
-        await fetch("/api/v1/appointments_services", {
+        await fetch("/api/v1/appointment_services", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             appointment_id: appointmentId,
             service_id: service.value,
-            name: service.label,
-            price: service.price,
+            service_name: service.label,
+            service_price: service.price,
           }),
         });
       }
@@ -196,18 +194,21 @@ export default function NewAppointment() {
             <input
               type="radio"
               name="appointment_type"
+              className="radio radio-primary"
               value="Consulta"
               checked={form.appointment_type === "Consulta"}
               onChange={(e) =>
                 handleInputChange("appointment_type", e.target.value)
               }
+              defaultChecked
             />{" "}
             Consulta
           </label>
-          <label>
+          <label className="ml-6">
             <input
               type="radio"
               name="appointment_type"
+              className="radio radio-primary"
               value="Retorno"
               checked={form.appointment_type === "Retorno"}
               onChange={(e) =>
@@ -220,21 +221,13 @@ export default function NewAppointment() {
 
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Data do Atendimento</label>
-          <InputMask
-            mask="99/99/9999"
+          <input
+            type="date"
+            name="appointment_date"
             placeholder="DD/MM/YYYY"
-            value={
-              form.appointment_date
-                ? moment(form.appointment_date, "YYYY-MM-DD").format(
-                    "DD/MM/YYYY",
-                  )
-                : ""
-            }
+            value={form.appointment_date}
             onChange={(e) =>
-              handleInputChange(
-                "appointment_date",
-                moment(e.target.value, "DD/MM/YYYY").format("YYYY-MM-DD"),
-              )
+              handleInputChange("appointment_date", e.target.value)
             }
             className="input input-bordered w-full"
           />
@@ -271,8 +264,8 @@ export default function NewAppointment() {
             name="temperature"
             step="0.10"
             placeholder="Temperatura em graus Celsius"
-            value={form.weight}
-            onChange={handleInputChange}
+            value={form.temperature}
+            onChange={(e) => handleInputChange("temperature", e.target.value)}
             className="input input-bordered w-full"
           />
         </div>
@@ -285,7 +278,7 @@ export default function NewAppointment() {
             step="0.10"
             placeholder="Peso do pet"
             value={form.weight}
-            onChange={handleInputChange}
+            onChange={(e) => handleInputChange("weight", e.target.value)}
             className="input input-bordered w-full"
           />
         </div>
@@ -368,20 +361,12 @@ export default function NewAppointment() {
 
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Data para Retorno</label>
-          <InputMask
-            mask="99/99/9999"
+          <input
+            type="date"
+            name="return_date"
             placeholder="DD/MM/YYYY"
-            value={
-              form.return_date
-                ? moment(form.return_date, "YYYY-MM-DD").format("DD/MM/YYYY")
-                : ""
-            }
-            onChange={(e) =>
-              handleInputChange(
-                "return_date",
-                moment(e.target.value, "DD/MM/YYYY").format("YYYY-MM-DD"),
-              )
-            }
+            value={form.return_date}
+            onChange={(e) => handleInputChange("return_date", e.target.value)}
             className="input input-bordered w-full"
           />
         </div>

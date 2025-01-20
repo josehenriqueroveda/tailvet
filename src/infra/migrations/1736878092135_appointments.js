@@ -58,6 +58,12 @@ exports.up = (pgm) => {
       references: "appointments",
       onDelete: "CASCADE",
     },
+    service_id: {
+      type: "integer",
+      notNull: true,
+      references: "services",
+      onDelete: "CASCADE",
+    },
     service_name: { type: "varchar(255)", notNull: true },
     service_price: { type: "decimal(6, 2)", notNull: true },
     created_at: {

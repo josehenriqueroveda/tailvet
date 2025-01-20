@@ -1,198 +1,163 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import useSWR from "swr";
+import authenticatedFetcher from "src/hooks/authenticatedFetcher";
 import moment from "moment";
+import { LuCircleX } from "react-icons/lu";
 
-export default function AppointmentDetails() {
+export default function ViewAppointment() {
   const router = useRouter();
   const { id } = router.query;
-  const [appointment, setAppointment] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchAppointment = async () => {
-      const token = Cookies.get("authToken");
-      try {
-        const response = await fetch(`/api/v1/appointments/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!response.ok) throw new Error("Failed to fetch appointment");
-
-        const data = await response.json();
-        setAppointment(data);
-      } catch (error) {
-        console.error("Error fetching appointment:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAppointment();
-  }, [id]);
-
-  if (loading) {
-    return <p>Carregando...</p>;
-  }
-
-  if (!appointment) {
-    return <p>Atendimento não encontrado.</p>;
-  }
-
-  const {
-    owner,
-    pet,
-    appointment_date,
-    appointment_type,
-    main_complaint,
-    anamnesis,
-    temperature,
-    weight,
-    neurological_system,
-    digestive_system,
-    cardiorespiratory_system,
-    urinary_system,
-    diagnosis,
-    observations,
-    return_date,
-    extra_services = [],
-  } = appointment;
-
-  const totalPrice = extra_services.reduce(
-    (total, service) => total + service.price,
-    0,
+  const { data: appointmentData, error: appointmentError } = useSWR(
+    id ? `/api/v1/appointments?id=${id}` : null,
+    authenticatedFetcher,
+  );
+  const { data: servicesData, error: servicesError } = useSWR(
+    id ? `/api/v1/appointment_services?appointment_id=${id}` : null,
+    authenticatedFetcher,
   );
 
+  if (appointmentError || servicesError) {
+    return (
+      <div className="p-6">
+        <div role="alert" className="alert alert-error">
+          <LuCircleX className="text-white" />
+          <span className="text-white">
+            Erro! Falha ao carregar dados do atendimento.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!appointmentData || !servicesData) {
+    return (
+      <div className="flex flex-row min-h-screen justify-center items-center">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Detalhes do Atendimento</h1>
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Detalhes do Atendimento</h1>
+      <div className="card bg-base-100 shadow-md p-4 max-w-xl">
+        <p>
+          <strong>Proprietário:</strong> {appointmentData.owner_name}
+        </p>
 
-      <div className="space-y-4">
-        <div>
-          <h2 className="font-bold">Proprietário</h2>
-          <p>{owner?.name || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Pet:</strong> {appointmentData.pet_name}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Pet</h2>
-          <p>{pet?.name || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Tipo de Atendimento:</strong>{" "}
+          {appointmentData.appointment_type}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Tipo de Atendimento</h2>
-          <p>{appointment_type || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Data do Atendimento:</strong>{" "}
+          {appointmentData.appointment_date
+            ? moment.utc(appointmentData.appointment_date).format("DD/MM/YYYY")
+            : "N/A"}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Data do Atendimento</h2>
-          <p>
-            {appointment_date
-              ? moment(appointment_date).format("DD/MM/YYYY")
-              : "Não informado"}
-          </p>
-        </div>
+        <p>
+          <strong>Queixa Principal:</strong> {appointmentData.main_complaint}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Queixa Principal</h2>
-          <p>{main_complaint || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Anamnese:</strong> {appointmentData.anamnesis}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Anamnese</h2>
-          <p>{anamnesis || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Temperatura:</strong> {appointmentData.temperature} °C
+        </p>
 
-        <div>
-          <h2 className="font-bold">Temperatura</h2>
-          <p>{temperature ? `${temperature} °C` : "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Peso:</strong> {appointmentData.weight} Kg
+        </p>
 
-        <div>
-          <h2 className="font-bold">Peso</h2>
-          <p>{weight ? `${weight} kg` : "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Sistema Neurológico:</strong>{" "}
+          {appointmentData.neurological_system}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Sistema Neurológico</h2>
-          <p>{neurological_system || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Sistema Digestório:</strong>{" "}
+          {appointmentData.digestive_system}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Sistema Digestório</h2>
-          <p>{digestive_system || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Sistema Cardiorespiratório:</strong>{" "}
+          {appointmentData.cardiorespiratory_system}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Sistema Cardiorespiratório</h2>
-          <p>{cardiorespiratory_system || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Sistema Urinário:</strong> {appointmentData.urinary_system}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Sistema Urinário</h2>
-          <p>{urinary_system || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Diagnóstico:</strong> {appointmentData.diagnosis}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Diagnóstico</h2>
-          <p>{diagnosis || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Observações Adicionais:</strong>{" "}
+          {appointmentData.observations}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Observações Adicionais</h2>
-          <p>{observations || "Não informado"}</p>
-        </div>
+        <p>
+          <strong>Data para Retorno:</strong>{" "}
+          {appointmentData.return_date
+            ? moment.utc(appointmentData.return_date).format("DD/MM/YYYY")
+            : "N/A"}
+        </p>
 
-        <div>
-          <h2 className="font-bold">Data para Retorno</h2>
-          <p>
-            {return_date
-              ? moment(return_date).format("DD/MM/YYYY")
-              : "Não informado"}
-          </p>
-        </div>
-
-        <div>
-          <h2 className="font-bold">Serviços Extras</h2>
-          {extra_services.length > 0 ? (
-            <table className="table-auto w-full border">
-              <thead>
-                <tr>
-                  <th className="border px-4 py-2">Serviço</th>
-                  <th className="border px-4 py-2">Preço</th>
-                  <th className="border px-4 py-2">Categoria</th>
+        <div className="mt-6">
+          <h2 className="text-lg font-bold">Serviços Prestados</h2>
+          <table className="table-auto w-full border mt-4">
+            <thead>
+              <tr>
+                <th className="border px-4 py-2">
+                  Materiais, Medicamentos e Serviços
+                </th>
+                <th className="border px-4 py-2">Preço</th>
+                <th className="border px-4 py-2">Categoria</th>
+              </tr>
+            </thead>
+            <tbody>
+              {servicesData.services.map((service, index) => (
+                <tr key={index}>
+                  <td className="border px-4 py-2">
+                    {service.service_name || "N/A"}
+                  </td>
+                  <td className="border px-4 py-2">
+                    R${service.service_price}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {service.service_category || "N/A"}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {extra_services.map((service, index) => (
-                  <tr key={index}>
-                    <td className="border px-4 py-2">{service.name}</td>
-                    <td className="border px-4 py-2">
-                      R${service.price.toFixed(2)}
-                    </td>
-                    <td className="border px-4 py-2">{service.category}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Nenhum serviço adicional registrado.</p>
-          )}
-        </div>
-
-        <div className="stats shadow mt-6">
-          <div className="stat">
-            <div className="stat-title">Valor Total</div>
-            <div className="stat-value">R${totalPrice.toFixed(2)}</div>
+              ))}
+            </tbody>
+          </table>
+          <div className="stats shadow mt-6">
+            <div className="stat">
+              <div className="stat-title">Valor total</div>
+              <div className="stat-value">
+                R${servicesData.total_price.toFixed(2)}
+              </div>
+            </div>
           </div>
         </div>
 
-        <button
-          onClick={() => router.push("/appointments")}
-          className="btn btn-primary mt-6"
-        >
-          Voltar
-        </button>
+        <div className="max-w-xl">
+          <button
+            className="btn btn-info mt-6 w-32"
+            onClick={() => router.back()}
+          >
+            Voltar
+          </button>
+        </div>
       </div>
     </div>
   );
