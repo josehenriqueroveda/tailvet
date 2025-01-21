@@ -52,7 +52,7 @@ export default function EditService() {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Editar Serviço</h1>
+      <h1 className="text-2xl font-bold mb-4">Editar Serviço</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Nome</label>
@@ -135,8 +135,12 @@ export default function EditService() {
           </div>
           <div className="max-w-xl">
             <button
+              type="button"
               className="btn btn-info mt-6 w-32"
-              onClick={() => router.back()}
+              onClick={(e) => {
+                e.preventDefault();
+                router.back();
+              }}
             >
               Voltar
             </button>

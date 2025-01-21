@@ -34,7 +34,9 @@ export default function AppointmentsList() {
     .filter((appointment) =>
       appointment.owner_name?.toLowerCase().includes(search.toLowerCase()),
     )
-    .sort((a, b) => a.owner_name?.localeCompare(b.owner_name));
+    .sort(
+      (a, b) => new Date(b.appointment_date) - new Date(a.appointment_date),
+    );
 
   return (
     <div className="p-6">

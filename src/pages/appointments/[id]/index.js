@@ -38,8 +38,8 @@ export default function ViewAppointment() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Detalhes do Atendimento</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Detalhes do Atendimento</h1>
       <div className="card bg-base-100 shadow-md p-4 max-w-xl">
         <p>
           <strong>Proprietário:</strong> {appointmentData.owner_name}
@@ -152,8 +152,12 @@ export default function ViewAppointment() {
 
         <div className="max-w-xl">
           <button
+            type="button"
             className="btn btn-info mt-6 w-32"
-            onClick={() => router.back()}
+            onClick={(e) => {
+              e.preventDefault();
+              router.back();
+            }}
           >
             Voltar
           </button>

@@ -254,19 +254,26 @@ export default function NewVaccination() {
         </div>
 
         <div className="max-w-xl flex space-x-6">
-          <button
-            type="submit"
-            className="btn btn-primary mt-6 text-white w-32"
-          >
-            Salvar
-          </button>
-          <button
-            type="button"
-            className="btn btn-info mt-6 w-32"
-            onClick={() => router.back()}
-          >
-            Voltar
-          </button>
+          <div className="max-w-xl">
+            <button
+              type="submit"
+              className="btn btn-primary mt-6 text-white w-32"
+            >
+              Salvar
+            </button>
+          </div>
+          <div className="max-w-xl">
+            <button
+              type="button"
+              className="btn btn-info mt-6 w-32"
+              onClick={(e) => {
+                e.preventDefault();
+                router.back();
+              }}
+            >
+              Voltar
+            </button>
+          </div>
         </div>
       </form>
     </div>
