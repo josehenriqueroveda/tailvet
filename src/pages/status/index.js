@@ -13,22 +13,18 @@ import {
 
 export default function StatusPage() {
   return (
-    <>
-      <main className="min-h-screen bg-[#f8fafc] p-6 md:p-8 lg:p-12">
-        <h1 className="text-2xl font-semibold text-gray-900 sm:text-3xl">
-          Status
-        </h1>
-        <UpdatedAt />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <DatabaseStatus />
-          <DatabaseVersion />
-          <MaxConnections />
-          <OpenConnections />
-          <VercelStatus />
-          <GitHubStatus />
-        </div>
-      </main>
-    </>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Status</h1>
+      <UpdatedAt />
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <DatabaseStatus />
+        <DatabaseVersion />
+        <MaxConnections />
+        <OpenConnections />
+        <VercelStatus />
+        <GitHubStatus />
+      </div>
+    </div>
   );
 }
 

@@ -32,7 +32,9 @@ export default function VaccinationsList() {
     .filter((vaccine) =>
       vaccine.owner_name?.toLowerCase().includes(search.toLowerCase()),
     )
-    .sort((a, b) => a.owner_name?.localeCompare(b.owner_name));
+    .sort(
+      (a, b) => new Date(b.vaccination_date) - new Date(a.vaccination_date),
+    );
 
   return (
     <div className="p-6">

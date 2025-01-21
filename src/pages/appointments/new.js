@@ -200,7 +200,6 @@ export default function NewAppointment() {
               onChange={(e) =>
                 handleInputChange("appointment_type", e.target.value)
               }
-              defaultChecked
             />{" "}
             Consulta
           </label>
@@ -441,8 +440,12 @@ export default function NewAppointment() {
           </div>
           <div className="max-w-xl">
             <button
+              type="button"
               className="btn btn-info mt-6 w-32"
-              onClick={() => router.back()}
+              onClick={(e) => {
+                e.preventDefault();
+                router.back();
+              }}
             >
               Voltar
             </button>
