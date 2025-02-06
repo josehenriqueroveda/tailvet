@@ -10,9 +10,9 @@ beforeAll(async () => {
 
 async function dummyUser() {
   const user = {
-    name: "Jane Doe",
-    email: "jane@test.com",
-    password: "jane-PWD01",
+    name: "Joe Doe",
+    email: "joe@test.com",
+    password: "Joe@123",
   };
 
   try {
@@ -41,8 +41,8 @@ describe("POST /api/v1/auth/login", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: "jane@test.com",
-          password: "jane-PWD01",
+          email: "joe@test.com",
+          password: "Joe@123",
         }),
       });
 
