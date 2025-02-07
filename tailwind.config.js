@@ -10,6 +10,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        print: { raw: "print" },
+      },
+      width: {
+        a4: "21cm",
+      },
+      height: {
+        a4: "29.7cm",
+      },
       keyframes: {
         gradient: {
           "0%": { backgroundPosition: "0% 50%" },

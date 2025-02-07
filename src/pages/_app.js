@@ -8,6 +8,7 @@ import {
   LuLogOut,
   LuMenu,
   LuPawPrint,
+  LuPill,
   LuSheet,
   LuStethoscope,
   LuSyringe,
@@ -69,7 +70,7 @@ export default function App({ Component, pageProps }) {
       <div
         className={`${
           isDrawerOpen ? "w-80" : "w-16"
-        } bg-primary text-white flex flex-col transition-all duration-300`}
+        } bg-primary text-white flex flex-col transition-all duration-300 print:hidden`}
       >
         <button
           className="p-4 focus:outline-none"
@@ -86,6 +87,11 @@ export default function App({ Component, pageProps }) {
           <li>
             <Link className="text-base text-white" href="/appointments">
               <LuStethoscope /> {!isDrawerOpen ? null : "Atendimentos"}
+            </Link>
+          </li>
+          <li>
+            <Link className="text-base text-white" href="/prescriptions">
+              <LuPill /> {!isDrawerOpen ? null : "Receituários"}
             </Link>
           </li>
           <li>
