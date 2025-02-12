@@ -43,15 +43,18 @@ export default function EditPet() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = Cookies.get("authToken");
-    const response = await fetch(`/api/v1/pets/${id}`, {
+    const response = await fetch(`/api/v1/pets?id=${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify(
+        Object.fromEntries(
+          Object.entries(form).filter(([key]) => key !== "owner_name"),
+        ),
+      ),
     });
-
     if (response.ok) {
       router.push("/pets");
     } else {
@@ -114,11 +117,9 @@ export default function EditPet() {
             required
           >
             <option value="">Selecione a espécie</option>
-            <option value="cachorro">Cachorro</option>
-            <option value="gato">Gato</option>
-            <option value="coelho">Coelho</option>
-            <option value="ave">Ave</option>
-            <option value="outros">Outros</option>
+            <option value="canina">Canina</option>
+            <option value="felina">Felina</option>
+            <option value="outra">Outra</option>
           </select>
         </div>
 

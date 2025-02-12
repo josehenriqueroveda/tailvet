@@ -148,9 +148,9 @@ export default function NewPet() {
             required
           >
             <option value="">Selecione a espécie</option>
-            <option value="cachorro">Canina</option>
-            <option value="gato">Felina</option>
-            <option value="outros">Outro</option>
+            <option value="canina">Canina</option>
+            <option value="felina">Felina</option>
+            <option value="outra">Outra</option>
           </select>
         </div>
 
