@@ -11,9 +11,8 @@ export default function ViewPrescription() {
     id ? `/api/v1/prescriptions?id=${id}` : null,
     authenticatedFetcher,
   );
-
   const { data: petData, error: petError } = useSWR(
-    id ? `/api/v1/pets?id=${prescriptionData.pet_id}` : null,
+    prescriptionData ? `/api/v1/pets?id=${prescriptionData.pet_id}` : null,
     authenticatedFetcher,
   );
 
@@ -31,7 +30,7 @@ export default function ViewPrescription() {
       </div>
     );
   }
-  if (!prescriptionData) {
+  if (!prescriptionData || !petData) {
     return (
       <div className="flex flex-row min-h-screen justify-center items-center">
         <span className="loading loading-dots loading-lg"></span>
@@ -51,7 +50,8 @@ export default function ViewPrescription() {
           </h1>
           <div className="mb-4">
             <p className="text-base text-center text-gray-600">
-              {process.env.NEXT_PUBLIC_VETERINARY}
+              {process.env.NEXT_PUBLIC_VETERINARY} - CRMV N.
+              {process.env.NEXT_PUBLIC_CRMV}
             </p>
             <p className="text-sm text-center text-gray-600">
               Endereço: {process.env.NEXT_PUBLIC_ADDRESS}
