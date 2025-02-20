@@ -40,25 +40,25 @@ async function handleGet(request, response) {
   if (id) {
     const result = await database.query({
       text: `
-        SELECT bt.*, p.name AS pet_name, c.name AS owner_name
-        FROM blood_tests bt
-        JOIN pets p ON bt.pet_id = p.id
+        SELECT ut.*, p.name AS pet_name, c.name AS owner_name
+        FROM urine_tests ut
+        JOIN pets p ON ut.pet_id = p.id
         JOIN customers c ON p.owner_id = c.id
-        WHERE bt.id = $1
+        WHERE ut.id = $1
       `,
       values: [id],
     });
 
     if (result.rows.length === 0) {
-      return response.status(404).json({ error: "Blood test not found" });
+      return response.status(404).json({ error: "Urine test not found" });
     }
     return response.status(200).json(result.rows[0]);
   } else if (search) {
     const result = await database.query({
       text: `
-        SELECT bt.*, p.name AS pet_name, c.name AS owner_name
-        FROM blood_tests bt
-        JOIN pets p ON bt.pet_id = p.id
+        SELECT ut.*, p.name AS pet_name, c.name AS owner_name
+        FROM urine_tests ut
+        JOIN pets p ON ut.pet_id = p.id
         JOIN customers c ON p.owner_id = c.id
         WHERE c.name ILIKE $1
       `,
@@ -69,9 +69,9 @@ async function handleGet(request, response) {
   } else {
     const result = await database.query({
       text: `
-        SELECT bt.*, p.name AS pet_name, c.name AS owner_name
-        FROM blood_tests bt
-        JOIN pets p ON bt.pet_id = p.id
+        SELECT ut.*, p.name AS pet_name, c.name AS owner_name
+        FROM urine_tests ut
+        JOIN pets p ON ut.pet_id = p.id
         JOIN customers c ON p.owner_id = c.id
       `,
     });
@@ -86,26 +86,27 @@ async function handlePost(request, response) {
     test_date,
     material,
     method,
-    erythrocytes,
+    color,
+    aspect,
+    filament,
+    deposit,
+    smell,
+    ph,
+    density,
+    proteins,
+    glycose,
+    ketone,
+    bilirubin,
     hemoglobin,
-    hematocrit,
-    hcm,
-    chcm,
-    vcm,
+    nitrite,
+    urobilinogen,
+    ascorbic_acid,
+    cells,
     leukocytes,
-    total_neutrophils,
-    metamyelocytes,
-    rods,
-    segments,
-    basophiles,
-    eosinophils,
-    total_lymphocytes,
-    typical,
-    atypical,
-    monocytes,
-    platelet_count,
-    hematozoa_research,
-    plasma_protein,
+    haemias,
+    cylindricals,
+    crystals,
+    other_elements,
     comments,
   } = request.body;
 
@@ -116,62 +117,45 @@ async function handlePost(request, response) {
   }
 
   const result = await database.query({
-    text: `INSERT INTO blood_tests (
-        pet_id,
-        owner_id,
-        test_date,
-        material,
-        method,
-        erythrocytes,
-        hemoglobin,
-        hematocrit,
-        hcm,
-        chcm,
-        vcm,
-        leukocytes,
-        total_neutrophils,
-        metamyelocytes,
-        rods,
-        segments,
-        basophiles,
-        eosinophils,
-        total_lymphocytes,
-        typical,
-        atypical,
-        monocytes,
-        platelet_count,
-        hematozoa_research,
-        plasma_protein,
-        comments,
-        created_at,
-        updated_at
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING *`,
+    text: `INSERT INTO urine_tests (
+    pet_id, owner_id, test_date, material, method, color, aspect, filament, 
+    deposit, smell, ph, density, proteins, glycose, ketone, bilirubin, 
+    hemoglobin, nitrite, urobilinogen, ascorbic_acid, cells, leukocytes, 
+    haemias, cylindricals, crystals, other_elements, comments, created_at, updated_at
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, 
+    $9, $10, $11, $12, $13, $14, $15, $16, 
+    $17, $18, $19, $20, $21, $22, 
+    $23, $24, $25, $26, $27, $28, $29
+) RETURNING *;
+`,
     values: [
       owner_id,
       pet_id,
       test_date,
-      material,
-      method,
-      erythrocytes || null,
+      material || null,
+      method || null,
+      color || null,
+      aspect || null,
+      filament || null,
+      deposit || null,
+      smell || null,
+      ph || null,
+      density || null,
+      proteins || null,
+      glycose || null,
+      ketone || null,
+      bilirubin || null,
       hemoglobin || null,
-      hematocrit || null,
-      hcm || null,
-      chcm || null,
-      vcm || null,
+      nitrite || null,
+      urobilinogen || null,
+      ascorbic_acid || null,
+      cells || null,
       leukocytes || null,
-      total_neutrophils || null,
-      metamyelocytes || null,
-      rods || null,
-      segments || null,
-      basophiles || null,
-      eosinophils || null,
-      total_lymphocytes || null,
-      typical || null,
-      atypical || null,
-      monocytes || null,
-      platelet_count || null,
-      hematozoa_research || null,
-      plasma_protein || null,
+      haemias || null,
+      cylindricals || null,
+      crystals || null,
+      other_elements || null,
       comments || null,
     ],
   });
@@ -203,24 +187,24 @@ async function handlePut(request, response) {
   values.push(id);
 
   await database.query({
-    text: `UPDATE blood_tests SET ${updates.join(", ")} WHERE id = $${index}`,
+    text: `UPDATE urine_tests SET ${updates.join(", ")} WHERE id = $${index}`,
     values,
   });
 
-  const updatedBloodTest = await database.query({
+  const updatedUrineTest = await database.query({
     text: `
-      SELECT bt.*, p.name AS pet_name, c.name AS owner_name
-      FROM blood_tests bt
-      JOIN pets p ON bt.pet_id = p.id
+      SELECT ut.*, p.name AS pet_name, c.name AS owner_name
+      FROM urine_tests ut
+      JOIN pets p ON ut.pet_id = p.id
       JOIN customers c ON p.owner_id = c.id
-      WHERE bt.id = $1
+      WHERE ut.id = $1
     `,
     values: [id],
   });
 
   return response.status(200).json({
-    message: "Blood test updated successfully",
-    appointment: updatedBloodTest.rows[0],
+    message: "Urine test updated successfully",
+    appointment: updatedUrineTest.rows[0],
   });
 }
 
@@ -232,16 +216,16 @@ async function handleDelete(request, response) {
   }
 
   const result = await database.query({
-    text: "DELETE FROM blood_tests WHERE id = $1 RETURNING *",
+    text: "DELETE FROM urine_tests WHERE id = $1 RETURNING *",
     values: [id],
   });
 
   if (result.rows.length === 0) {
-    return response.status(404).json({ error: "Blood test not found" });
+    return response.status(404).json({ error: "Urine test not found" });
   }
 
   return response.status(200).json({
-    message: "Blood test successfully deleted",
+    message: "Urine test successfully deleted",
     appointment: result.rows[0],
   });
 }
