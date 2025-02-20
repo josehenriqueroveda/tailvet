@@ -44,7 +44,7 @@ async function handleGet(request, response) {
         FROM blood_tests bt
         JOIN pets p ON bt.pet_id = p.id
         JOIN customers c ON p.owner_id = c.id
-        WHERE a.id = $1
+        WHERE bt.id = $1
       `,
       values: [id],
     });
@@ -213,7 +213,7 @@ async function handlePut(request, response) {
       FROM blood_tests bt
       JOIN pets p ON bt.pet_id = p.id
       JOIN customers c ON p.owner_id = c.id
-      WHERE a.id = $1
+      WHERE bt.id = $1
     `,
     values: [id],
   });
