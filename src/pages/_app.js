@@ -102,7 +102,7 @@ export default function App({ Component, pageProps }) {
           </li>
           <li>
             <Link className="text-base text-white" href="/blood-tests">
-              <LuDroplets /> {!isDrawerOpen ? null : "Exames"}
+              <LuDroplets /> {!isDrawerOpen ? null : "Exames de Sangue"}
             </Link>
           </li>
           <li>
