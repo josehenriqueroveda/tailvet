@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   LuArrowUpDown,
+  LuDroplets,
   LuHouse,
   LuLogOut,
   LuMenu,
@@ -97,6 +98,11 @@ export default function App({ Component, pageProps }) {
           <li>
             <Link className="text-base text-white" href="/vaccinations">
               <LuSyringe /> {!isDrawerOpen ? null : "Vacinações"}
+            </Link>
+          </li>
+          <li>
+            <Link className="text-base text-white" href="/blood-tests">
+              <LuDroplets /> {!isDrawerOpen ? null : "Exames de Sangue"}
             </Link>
           </li>
           <li>
