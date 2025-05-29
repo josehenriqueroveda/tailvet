@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import moment from "moment";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
 import { LuCircleX, LuEye, LuPencil, LuPlus, LuSearch } from "react-icons/lu";
 
@@ -68,7 +69,7 @@ export default function PetsList() {
             <th>Nome</th>
             <th>Espécie</th>
             <th>Gênero</th>
-            <th>Idade</th>
+            <th>Data de Nascimento</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -80,7 +81,7 @@ export default function PetsList() {
                 <td>{pet.name}</td>
                 <td>{pet.species}</td>
                 <td>{pet.gender}</td>
-                <td>{pet.age}</td>
+                <td>{moment.utc(pet.birth_date).format("DD/MM/YYYY")}</td>
                 <td>
                   <button
                     onClick={() => router.push(`/pets/${pet.id}`)}

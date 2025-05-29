@@ -63,9 +63,6 @@ export default function ViewPet() {
             : "N/A"}
         </p>
         <p>
-          <strong>Idade:</strong> {petData.age || "N/A"}
-        </p>
-        <p>
           <strong>Peso:</strong> {petData.weight || "N/A"}
         </p>
         <p>

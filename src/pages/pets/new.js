@@ -6,6 +6,8 @@ import { DateInput } from "rsuite";
 
 export default function NewPet() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [petAge, setPetAge] = useState("");
   const [form, setForm] = useState({
     name: "",
     gender: "",
@@ -42,10 +44,10 @@ export default function NewPet() {
     const birthDate = value ? new Date(value) : null;
 
     // Atualiza o birth_date
+    setPetAge(birthDate ? calculateAge(birthDate) : "");
     setForm((prev) => ({
       ...prev,
       birth_date: birthDate,
-      age: birthDate ? calculateAge(birthDate) : "",
     }));
   };
 
@@ -83,6 +85,8 @@ export default function NewPet() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
 
     try {
@@ -99,9 +103,11 @@ export default function NewPet() {
         router.push("/pets");
       } else {
         console.error("Failed to create pet");
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -208,7 +214,7 @@ export default function NewPet() {
             type="text"
             name="age"
             placeholder="Idade do pet"
-            value={form.age}
+            value={petAge}
             readOnly
             className="input input-bordered w-full"
           />
@@ -246,6 +252,7 @@ export default function NewPet() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>

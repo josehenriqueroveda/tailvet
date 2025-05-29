@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
-import InputMask from "react-input-mask";
-import moment from "moment";
 
 export default function EditPet() {
   const router = useRouter();
@@ -23,17 +21,7 @@ export default function EditPet() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "birth_date") {
-      const isValidDate = moment(value, "DD/MM/YYYY", true).isValid();
-      setForm({
-        ...form,
-        [name]: isValidDate
-          ? moment.utc(value, "DD/MM/YYYY").format("YYYY-MM-DD")
-          : value,
-      });
-    } else {
-      setForm({ ...form, [name]: value });
-    }
+    setForm({ ...form, [name]: value });
   };
 
   const handleCheckboxChange = (e) => {
@@ -142,33 +130,6 @@ export default function EditPet() {
             name="color"
             placeholder="Cor do pet"
             value={form.color}
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        <div className="max-w-xl">
-          <label className="block text-sm mb-2">Data de Nascimento</label>
-          <InputMask
-            mask="99/99/9999"
-            name="birth_date"
-            value={
-              form.birth_date
-                ? moment(form.birth_date, "YYYY-MM-DD").format("DD/MM/YYYY")
-                : ""
-            }
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        <div className="max-w-xl">
-          <label className="block text-sm mb-2">Idade</label>
-          <input
-            type="text"
-            name="age"
-            placeholder="Idade do pet (em texto)"
-            value={form.age}
             onChange={handleChange}
             className="input input-bordered w-full"
           />
