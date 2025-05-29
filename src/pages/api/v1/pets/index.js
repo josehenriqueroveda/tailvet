@@ -84,7 +84,6 @@ async function handlePost(request, response) {
     species,
     breed,
     birth_date,
-    age,
     weight,
     color,
     is_neutered,
@@ -99,8 +98,8 @@ async function handlePost(request, response) {
 
   const result = await database.query({
     text: `INSERT INTO pets
-    (name, gender, species, breed, birth_date, age, weight, color, is_neutered, owner_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    (name, gender, species, breed, birth_date, weight, color, is_neutered, owner_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING *`,
     values: [
       name,
@@ -108,7 +107,6 @@ async function handlePost(request, response) {
       species,
       breed || null,
       birth_date || null,
-      age || null,
       weight || null,
       color || null,
       is_neutered || false,

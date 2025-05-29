@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import AsyncSelect from "react-select/async";
-import InputMask from "react-input-mask";
-import moment from "moment";
+import { DateInput } from "rsuite";
 
 export default function NewPet() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [petAge, setPetAge] = useState("");
   const [form, setForm] = useState({
     name: "",
     gender: "",
@@ -21,19 +22,33 @@ export default function NewPet() {
     owner_id: "",
   });
 
+  const calculateAge = (birthDate) => {
+    const today = new Date();
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} anos e ${months} meses`;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "birth_date") {
-      const isValidDate = moment(value, "DD/MM/YYYY").isValid();
-      setForm({
-        ...form,
-        [name]: isValidDate
-          ? moment.utc(value, "DD/MM/YYYY").format("YYYY-MM-DD")
-          : value,
-      });
-    } else {
-      setForm({ ...form, [name]: value });
-    }
+    setForm({ ...form, [name]: value });
+  };
+
+  const handleDateChange = (value) => {
+    const birthDate = value ? new Date(value) : null;
+
+    // Atualiza o birth_date
+    setPetAge(birthDate ? calculateAge(birthDate) : "");
+    setForm((prev) => ({
+      ...prev,
+      birth_date: birthDate,
+    }));
   };
 
   const handleSelectChange = (selectedOption) => {
@@ -70,6 +85,8 @@ export default function NewPet() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
 
     try {
@@ -86,9 +103,11 @@ export default function NewPet() {
         router.push("/pets");
       } else {
         console.error("Failed to create pet");
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -180,15 +199,11 @@ export default function NewPet() {
 
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Data de Nascimento</label>
-          <InputMask
-            mask="99/99/9999"
+          <DateInput
             name="birth_date"
-            value={
-              form.birth_date
-                ? moment(form.birth_date, "YYYY-MM-DD").format("DD/MM/YYYY")
-                : ""
-            }
-            onChange={handleChange}
+            format="dd/MM/yyyy"
+            value={form.birth_date}
+            onChange={handleDateChange}
             className="input input-bordered w-full"
           />
         </div>
@@ -198,9 +213,9 @@ export default function NewPet() {
           <input
             type="text"
             name="age"
-            placeholder="Idade do pet (em texto)"
-            value={form.age}
-            onChange={handleChange}
+            placeholder="Idade do pet"
+            value={petAge}
+            readOnly
             className="input input-bordered w-full"
           />
         </div>
@@ -237,6 +252,7 @@ export default function NewPet() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>
