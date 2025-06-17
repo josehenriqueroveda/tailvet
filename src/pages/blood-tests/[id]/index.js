@@ -60,7 +60,11 @@ export default function ViewBloodTest() {
           <label className="block text-sm mb-2">Data do Exame</label>
           <input
             type="text"
-            value={bloodTestData.test_date || ""}
+            value={
+              new Intl.DateTimeFormat("pt-BR", {
+                timeZone: "UTC",
+              }).format(new Date(bloodTestData.test_date)) || ""
+            }
             readOnly
             className="input input-bordered w-full bg-gray-100"
           />
