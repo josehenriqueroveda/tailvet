@@ -3,15 +3,13 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import AsyncSelect from "react-select/async";
 import Select from "react-select";
-import InputMask from "react-input-mask";
-import moment from "moment";
 
 export default function NewVaccination() {
   const router = useRouter();
   const [form, setForm] = useState({
     pet_id: "",
     vaccine_id: "",
-    vaccination_date: "",
+    application_date: "",
     dose: "",
     next_dose_date: "",
     notes: "",
@@ -190,21 +188,13 @@ export default function NewVaccination() {
 
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Data de Vacinação</label>
-          <InputMask
-            mask="99/99/9999"
+          <input
+            type="date"
+            name="application_date"
             placeholder="DD/MM/YYYY"
-            value={
-              form.vaccination_date
-                ? moment(form.vaccination_date, "YYYY-MM-DD").format(
-                    "DD/MM/YYYY",
-                  )
-                : ""
-            }
+            value={form.application_date || null}
             onChange={(e) =>
-              handleInputChange(
-                "vaccination_date",
-                moment(e.target.value, "DD/MM/YYYY").format("YYYY-MM-DD"),
-              )
+              handleInputChange("application_date", e.target.value)
             }
             className="input input-bordered w-full"
           />
@@ -224,19 +214,13 @@ export default function NewVaccination() {
 
         <div className="max-w-xl">
           <label className="block text-sm mb-2">Data da Próxima Dose</label>
-          <InputMask
-            mask="99/99/9999"
+          <input
+            type="date"
+            name="next_dose_date"
             placeholder="DD/MM/YYYY"
-            value={
-              form.next_dose_date
-                ? moment(form.next_dose_date, "YYYY-MM-DD").format("DD/MM/YYYY")
-                : ""
-            }
+            value={form.next_dose_date || null}
             onChange={(e) =>
-              handleInputChange(
-                "next_dose_date",
-                moment(e.target.value, "DD/MM/YYYY").format("YYYY-MM-DD"),
-              )
+              handleInputChange("next_dose_date", e.target.value)
             }
             className="input input-bordered w-full"
           />
