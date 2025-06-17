@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
-import { LuCircleX, LuEye, LuPlus, LuSearch } from "react-icons/lu";
+import { LuCircleX, LuPlus, LuSearch } from "react-icons/lu";
 
 export default function VaccinationsList() {
   const router = useRouter();
@@ -30,10 +30,10 @@ export default function VaccinationsList() {
 
   const filteredVaccinations = data
     .filter((vaccine) =>
-      vaccine.owner_name?.toLowerCase().includes(search.toLowerCase()),
+      vaccine.customer_name?.toLowerCase().includes(search.toLowerCase()),
     )
     .sort(
-      (a, b) => new Date(b.vaccination_date) - new Date(a.vaccination_date),
+      (a, b) => new Date(b.application_date) - new Date(a.application_date),
     );
 
   return (
@@ -72,32 +72,27 @@ export default function VaccinationsList() {
             <th>Data de Vacinação</th>
             <th>Dose</th>
             <th>Próxima Dose</th>
-            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
           {filteredVaccinations.map((vaccine) => {
             return (
               <tr key={vaccine.id}>
-                <td>{vaccine.owner_name || "Desconhecido"}</td>
+                <td>{vaccine.customer_name || "Desconhecido"}</td>
                 <td>{vaccine.pet_name}</td>
                 <td>{vaccine.vaccine_name}</td>
                 <td>
-                  {new Date(vaccine.vaccination_date).toLocaleDateString()}
+                  {new Intl.DateTimeFormat("pt-BR", {
+                    timeZone: "UTC",
+                  }).format(new Date(vaccine.application_date))}
                 </td>
                 <td>{vaccine.dose}</td>
                 <td>
                   {vaccine.next_dose_date
-                    ? new Date(vaccine.next_dose_date).toLocaleDateString()
+                    ? new Intl.DateTimeFormat("pt-BR", {
+                        timeZone: "UTC",
+                      }).format(new Date(vaccine.next_dose_date))
                     : "Não Aplicável"}
-                </td>
-                <td>
-                  <button
-                    onClick={() => router.push(`/vaccinations/${vaccine.id}`)}
-                    className="btn btn-sm btn-default"
-                  >
-                    <LuEye />
-                  </button>
                 </td>
               </tr>
             );
