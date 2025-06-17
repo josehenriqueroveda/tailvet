@@ -57,7 +57,8 @@ export default function ViewPrescription() {
               Endereço: {process.env.NEXT_PUBLIC_ADDRESS}
             </p>
             <p className="text-sm text-center text-gray-600">
-              Telefone: {process.env.NEXT_PUBLIC_PHONE} Celular: (00)00000-0000
+              Telefone: {process.env.NEXT_PUBLIC_PHONE} Celular:{" "}
+              {process.env.NEXT_PUBLIC_CELL_PHONE}
             </p>
           </div>
 
