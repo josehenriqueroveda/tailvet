@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
-import moment from "moment";
 import { LuCircleX } from "react-icons/lu";
 
 export default function ViewAppointment() {
@@ -57,7 +56,9 @@ export default function ViewAppointment() {
         <p>
           <strong>Data do Atendimento:</strong>{" "}
           {appointmentData.appointment_date
-            ? moment.utc(appointmentData.appointment_date).format("DD/MM/YYYY")
+            ? new Intl.DateTimeFormat("pt-BR", {
+                timeZone: "UTC",
+              }).format(new Date(appointmentData.appointment_date))
             : "N/A"}
         </p>
 
@@ -108,7 +109,9 @@ export default function ViewAppointment() {
         <p>
           <strong>Data para Retorno:</strong>{" "}
           {appointmentData.return_date
-            ? moment.utc(appointmentData.return_date).format("DD/MM/YYYY")
+            ? new Intl.DateTimeFormat("pt-BR", {
+                timeZone: "UTC",
+              }).format(new Date(appointmentData.return_date))
             : "N/A"}
         </p>
 
