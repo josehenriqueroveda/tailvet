@@ -68,10 +68,12 @@ export default function VaccinationsList() {
           <tr>
             <th>Proprietário</th>
             <th>Pet</th>
+            <th>Peso (Kg)</th>
             <th>Vacina</th>
             <th>Data de Vacinação</th>
             <th>Dose</th>
             <th>Próxima Dose</th>
+            <th>Observações</th>
           </tr>
         </thead>
         <tbody>
@@ -80,6 +82,7 @@ export default function VaccinationsList() {
               <tr key={vaccine.id}>
                 <td>{vaccine.customer_name || "Desconhecido"}</td>
                 <td>{vaccine.pet_name}</td>
+                <td>{vaccine.pet_weight || "N/A"}</td>
                 <td>{vaccine.vaccine_name}</td>
                 <td>
                   {new Intl.DateTimeFormat("pt-BR", {
@@ -94,6 +97,7 @@ export default function VaccinationsList() {
                       }).format(new Date(vaccine.next_dose_date))
                     : "Não Aplicável"}
                 </td>
+                <td>{vaccine.notes}</td>
               </tr>
             );
           })}
