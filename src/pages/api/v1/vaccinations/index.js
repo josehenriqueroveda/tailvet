@@ -100,6 +100,7 @@ async function handlePost(request, response) {
     application_date,
     next_dose_date,
     notes,
+    pet_weight,
   } = request.body;
 
   if (!pet_id || !vaccine_id || !dose || !application_date) {
@@ -108,8 +109,8 @@ async function handlePost(request, response) {
 
   await database.query({
     text: `
-      INSERT INTO vaccinations (pet_id, vaccine_id, price, dose, application_date, next_dose_date, notes)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO vaccinations (pet_id, vaccine_id, price, dose, application_date, next_dose_date, notes, pet_weight)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
     `,
     values: [
@@ -120,6 +121,7 @@ async function handlePost(request, response) {
       application_date,
       next_dose_date,
       notes,
+      pet_weight,
     ],
   });
 
@@ -139,8 +141,8 @@ async function handlePut(request, response) {
   const result = await database.query({
     text: `
       UPDATE vaccinations 
-      SET pet_id = $1, vaccine_id = $2, dose = $3, application_date = $4, next_dose_date = $5, notes = $6
-      WHERE id = $7
+      SET pet_id = $1, vaccine_id = $2, dose = $3, application_date = $4, next_dose_date = $5, notes = $6, pet_weight = $7
+      WHERE id = $8
       RETURNING *
     `,
     values: [
@@ -150,6 +152,7 @@ async function handlePut(request, response) {
       updates.application_date,
       updates.next_dose_date,
       updates.notes,
+      updates.pet_weight,
       id,
     ],
   });
