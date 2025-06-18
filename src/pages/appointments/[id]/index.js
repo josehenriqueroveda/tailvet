@@ -39,7 +39,7 @@ export default function ViewAppointment() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Detalhes do Atendimento</h1>
-      <div className="card bg-base-100 shadow-md p-4 max-w-xl">
+      <div className="card bg-base-100 shadow-md p-4 max-w-full">
         <p>
           <strong>Proprietário:</strong> {appointmentData.owner_name}
         </p>
@@ -123,8 +123,10 @@ export default function ViewAppointment() {
                 <th className="border px-4 py-2">
                   Materiais, Medicamentos e Serviços
                 </th>
-                <th className="border px-4 py-2">Preço</th>
                 <th className="border px-4 py-2">Categoria</th>
+                <th className="border px-4 py-2">Preço Unitário</th>
+                <th className="border px-4 py-2">Quantidade</th>
+                <th className="border px-4 py-2">Subtotal</th>
               </tr>
             </thead>
             <tbody>
@@ -134,10 +136,14 @@ export default function ViewAppointment() {
                     {service.service_name || "N/A"}
                   </td>
                   <td className="border px-4 py-2">
-                    R${service.service_price}
+                    {service.service_category || "N/A"}
                   </td>
                   <td className="border px-4 py-2">
-                    {service.service_category || "N/A"}
+                    R${parseFloat(service.service_price).toFixed(2)}
+                  </td>
+                  <td className="border px-4 py-2">{service.quantity ?? 1}</td>
+                  <td className="border px-4 py-2">
+                    R${parseFloat(service.item_total_price).toFixed(2)}
                   </td>
                 </tr>
               ))}
