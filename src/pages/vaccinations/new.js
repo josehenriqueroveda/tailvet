@@ -15,6 +15,7 @@ export default function NewVaccination() {
     next_dose_date: "",
     notes: "",
     price: "",
+    pet_weight: "",
   });
   const [pets, setPets] = useState([]);
   const [vaccines, setVaccines] = useState([]);
@@ -163,6 +164,19 @@ export default function NewVaccination() {
             className="react-select-container"
             classNamePrefix="react-select"
             noOptionsMessage={() => "Nenhum pet encontrado"}
+          />
+        </div>
+
+        <div className="max-w-xl">
+          <label className="block text-sm mb-2">Peso (Kg)</label>
+          <input
+            type="number"
+            name="weight"
+            step="0.10"
+            placeholder="Peso do pet"
+            value={form.pet_weight}
+            onChange={(e) => handleInputChange("pet_weight", e.target.value)}
+            className="input input-bordered w-full"
           />
         </div>
 
