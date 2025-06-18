@@ -6,6 +6,7 @@ import Select from "react-select";
 
 export default function NewVaccination() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     pet_id: "",
     vaccine_id: "",
@@ -106,6 +107,8 @@ export default function NewVaccination() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
 
     try {
@@ -122,9 +125,11 @@ export default function NewVaccination() {
         router.push("/vaccinations");
       } else {
         console.error("Failed to create vaccination");
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error(error);
+      setIsSubmitting(false);
     }
   };
 
@@ -242,6 +247,7 @@ export default function NewVaccination() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>
