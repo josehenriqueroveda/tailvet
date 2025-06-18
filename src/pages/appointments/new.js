@@ -6,6 +6,7 @@ import Select from "react-select";
 
 export default function NewAppointment() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [pets, setPets] = useState([]);
   const [form, setForm] = useState({
     pet_id: "",
@@ -120,7 +121,8 @@ export default function NewAppointment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       // Step 1: Create the appointment
       const appointmentResponse = await fetch("/api/v1/appointments", {
@@ -130,6 +132,7 @@ export default function NewAppointment() {
       });
 
       if (!appointmentResponse.ok) {
+        setIsSubmitting(false);
         throw new Error("Failed to create appointment");
       }
 
@@ -152,6 +155,7 @@ export default function NewAppointment() {
       router.push("/appointments");
     } catch (error) {
       console.error("Error submitting form:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -434,6 +438,7 @@ export default function NewAppointment() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>
