@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
-import moment from "moment";
 import { LuCircleX } from "react-icons/lu";
 
 export default function ViewPrescription() {
@@ -70,7 +69,9 @@ export default function ViewPrescription() {
 
             <p>
               <strong>Data:</strong>{" "}
-              {moment(prescriptionData.prescription_date).format("DD/MM/YYYY")}
+              {new Intl.DateTimeFormat("pt-BR", {
+                timeZone: "UTC",
+              }).format(new Date(prescriptionData.prescription_date))}
             </p>
           </div>
           <div className="flex flex-row justify-between">

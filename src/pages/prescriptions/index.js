@@ -80,9 +80,9 @@ export default function PrescriptionsList() {
                 <td>{prescription.owner_name || "Desconhecido"}</td>
                 <td>{prescription.pet_name}</td>
                 <td>
-                  {new Date(
-                    prescription.prescription_date,
-                  ).toLocaleDateString()}
+                  {new Intl.DateTimeFormat("pt-BR", {
+                    timeZone: "UTC",
+                  }).format(new Date(prescription.prescription_date))}
                 </td>
                 <td>
                   <button

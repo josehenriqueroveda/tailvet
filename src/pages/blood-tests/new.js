@@ -150,6 +150,8 @@ export default function NewBloodTest() {
           <label className="block text-sm mb-2">Data do Exame</label>
           <input
             type="date"
+            name="test_date"
+            placeholder="DD/MM/YYYY"
             value={form.test_date}
             onChange={(e) => handleInputChange("test_date", e.target.value)}
             className="input input-bordered w-full"

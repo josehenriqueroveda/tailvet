@@ -79,7 +79,11 @@ export default function BloodTestsList() {
               <tr key={bloodTest.id}>
                 <td>{bloodTest.owner_name || "Desconhecido"}</td>
                 <td>{bloodTest.pet_name}</td>
-                <td>{new Date(bloodTest.test_date).toLocaleDateString()}</td>
+                <td>
+                  {new Intl.DateTimeFormat("pt-BR", {
+                    timeZone: "UTC",
+                  }).format(new Date(bloodTest.test_date))}
+                </td>
                 <td>{bloodTest.material}</td>
                 <td>
                   <button

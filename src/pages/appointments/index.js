@@ -83,7 +83,9 @@ export default function AppointmentsList() {
                 <td>{appointment.pet_name}</td>
                 <td>{appointment.appointment_type}</td>
                 <td>
-                  {new Date(appointment.appointment_date).toLocaleDateString()}
+                  {new Intl.DateTimeFormat("pt-BR", {
+                    timeZone: "UTC",
+                  }).format(new Date(appointment.appointment_date))}
                 </td>
                 <td>
                   <button
