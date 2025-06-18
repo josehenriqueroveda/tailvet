@@ -6,6 +6,7 @@ import Select from "react-select";
 
 export default function NewPrescription() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     owner_id: "",
     pet_id: "",
@@ -96,6 +97,8 @@ export default function NewPrescription() {
   // Enviar dados ao backend
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
 
     try {
@@ -113,9 +116,11 @@ export default function NewPrescription() {
         router.push(`/prescriptions/${data.prescription_id}`);
       } else {
         console.error("Erro ao criar a receita");
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -221,7 +226,11 @@ export default function NewPrescription() {
 
         {/* Botões de ação */}
         <div className="max-w-xl flex space-x-6">
-          <button type="submit" className="btn btn-primary text-white w-32">
+          <button
+            type="submit"
+            className="btn btn-primary text-white w-32"
+            disabled={isSubmitting}
+          >
             Salvar
           </button>
           <button

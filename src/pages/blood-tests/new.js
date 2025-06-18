@@ -6,6 +6,7 @@ import Select from "react-select";
 
 export default function NewBloodTest() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     owner_id: "",
     pet_id: "",
@@ -91,8 +92,10 @@ export default function NewBloodTest() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = Cookies.get("authToken");
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
+    const token = Cookies.get("authToken");
     try {
       const response = await fetch("/api/v1/blood_tests", {
         method: "POST",
@@ -107,9 +110,11 @@ export default function NewBloodTest() {
         router.push("/blood-tests");
       } else {
         console.error("Failed to create a blood test");
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error(error);
+      setIsSubmitting(false);
     }
   };
 
@@ -468,6 +473,7 @@ export default function NewBloodTest() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>

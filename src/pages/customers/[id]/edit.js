@@ -5,6 +5,7 @@ import InputMask from "react-input-mask";
 
 export default function EditCustomer() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { id } = router.query;
   const [form, setForm] = useState(null);
   const [pets, setPets] = useState([]);
@@ -33,6 +34,8 @@ export default function EditCustomer() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
     const response = await fetch(`/api/v1/customers?id=${id}`, {
       method: "PUT",
@@ -47,7 +50,9 @@ export default function EditCustomer() {
       router.push(`/customers`);
     } else {
       console.error("Failed to update customer");
+      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   if (!form) {
@@ -180,6 +185,7 @@ export default function EditCustomer() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>
