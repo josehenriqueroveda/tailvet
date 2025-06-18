@@ -5,6 +5,7 @@ import InputMask from "react-input-mask";
 
 export default function NewCustomer() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: "",
     gender: "",
@@ -22,6 +23,8 @@ export default function NewCustomer() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
     const response = await fetch("/api/v1/customers", {
       method: "POST",
@@ -36,7 +39,9 @@ export default function NewCustomer() {
       router.push("/customers");
     } else {
       console.error("Failed to create a customer");
+      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -123,6 +128,7 @@ export default function NewCustomer() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>
