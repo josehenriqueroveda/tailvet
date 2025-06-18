@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 export default function NewService() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: "",
     price: "",
@@ -19,6 +20,8 @@ export default function NewService() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
     const response = await fetch("/api/v1/services", {
       method: "POST",
@@ -33,7 +36,9 @@ export default function NewService() {
       router.push("/services");
     } else {
       console.error("Failed to create a service");
+      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -115,6 +120,7 @@ export default function NewService() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>

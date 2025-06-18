@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 export default function EditService() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { id } = router.query;
   const [form, setForm] = useState(null);
 
@@ -25,6 +26,8 @@ export default function EditService() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const token = Cookies.get("authToken");
     const response = await fetch(`/api/v1/services?id=${id}`, {
       method: "PUT",
@@ -39,7 +42,9 @@ export default function EditService() {
       router.push(`/services`);
     } else {
       console.error("Failed to update service");
+      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   if (!form) {
@@ -129,6 +134,7 @@ export default function EditService() {
             <button
               type="submit"
               className="btn btn-primary mt-6 text-white w-32"
+              disabled={isSubmitting}
             >
               Salvar
             </button>
