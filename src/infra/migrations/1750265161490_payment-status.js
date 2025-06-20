@@ -14,7 +14,7 @@ exports.up = (pgm) => {
       type: "varchar(255)",
       notNull: false,
       comment:
-        "Status de pagamento: Não Pago, Pago Dinheiro, Pago Pix, Pago Cartão",
+        "Status de pagamento: A Pagar, Pago em Dinheiro, Pago no Pix, Pago no Cartão",
     },
   });
 
