@@ -23,6 +23,7 @@ export default function NewAppointment() {
     diagnosis: "",
     observations: "",
     return_date: "",
+    payment_status: "",
   });
   const [extraServices, setExtraServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
@@ -464,6 +465,23 @@ export default function NewAppointment() {
               <div className="stat-title">Valor total</div>
               <div className="stat-value">R${totalPrice.toFixed(2)}</div>
             </div>
+          </div>
+
+          <div className="max-w-xl mt-6">
+            <label className="block text-sm mb-2">Status de Pagamento</label>
+            <select
+              name="payment_status"
+              value={form.payment_status || ""}
+              onChange={(e) =>
+                handleInputChange("payment_status", e.target.value)
+              }
+              className="select select-bordered w-full"
+            >
+              <option value="A Pagar">A Pagar</option>
+              <option value="Pago em Dinheiro">Pago em Dinheiro</option>
+              <option value="Pago no Pix">Pago no Pix</option>
+              <option value="Pago no Cartão">Pago no Cartão</option>
+            </select>
           </div>
         </div>
 

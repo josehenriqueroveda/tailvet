@@ -2,18 +2,57 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import authenticatedFetcher from "src/hooks/authenticatedFetcher";
 import { LuCircleX } from "react-icons/lu";
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 export default function ViewAppointment() {
   const router = useRouter();
   const { id } = router.query;
-  const { data: appointmentData, error: appointmentError } = useSWR(
-    id ? `/api/v1/appointments?id=${id}` : null,
-    authenticatedFetcher,
-  );
+  const [paymentStatus, setPaymentStatus] = useState("");
+
+  const {
+    data: appointmentData,
+    error: appointmentError,
+    mutate: mutateAppointment,
+  } = useSWR(id ? `/api/v1/appointments?id=${id}` : null, authenticatedFetcher);
   const { data: servicesData, error: servicesError } = useSWR(
     id ? `/api/v1/appointment_services?appointment_id=${id}` : null,
     authenticatedFetcher,
   );
+
+  useEffect(() => {
+    if (appointmentData) {
+      setPaymentStatus(appointmentData.payment_status);
+    }
+  }, [appointmentData]);
+
+  // Função para atualizar o status de pagamento
+  const handlePaymentStatusUpdate = async () => {
+    try {
+      const token = Cookies.get("authToken");
+      const response = await fetch(`/api/v1/appointments`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          id,
+          payment_status: paymentStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Falha ao atualizar o status de pagamento");
+      }
+
+      // Atualiza os dados em cache
+      await mutateAppointment();
+    } catch (error) {
+      console.error("Erro ao atualizar status:", error);
+      alert("Erro ao atualizar status de pagamento");
+    }
+  };
 
   if (appointmentError || servicesError) {
     return (
@@ -157,19 +196,48 @@ export default function ViewAppointment() {
               </div>
             </div>
           </div>
+
+          <div className="max-w-xl mt-6">
+            <label className="block text-sm mb-2">Status de Pagamento</label>
+            <select
+              name="payment_status"
+              value={paymentStatus}
+              onChange={(e) => setPaymentStatus(e.target.value)}
+              className="select select-bordered w-full"
+            >
+              <option value="A Pagar">A Pagar</option>
+              <option value="Pago em Dinheiro">Pago em Dinheiro</option>
+              <option value="Pago no Pix">Pago no Pix</option>
+              <option value="Pago no Cartão">Pago no Cartão</option>
+            </select>
+          </div>
         </div>
 
-        <div className="max-w-xl">
-          <button
-            type="button"
-            className="btn btn-info mt-6 w-32"
-            onClick={(e) => {
-              e.preventDefault();
-              router.back();
-            }}
-          >
-            Voltar
-          </button>
+        <div className="max-w-xl flex space-x-6">
+          <div className="max-w-xl">
+            <button
+              onClick={handlePaymentStatusUpdate}
+              className="btn btn-primary mt-6 text-white w-32"
+              disabled={
+                !paymentStatus ||
+                paymentStatus === appointmentData?.payment_status
+              }
+            >
+              Salvar
+            </button>
+          </div>
+          <div className="max-w-xl">
+            <button
+              type="button"
+              className="btn btn-info mt-6 w-32"
+              onClick={(e) => {
+                e.preventDefault();
+                router.back();
+              }}
+            >
+              Voltar
+            </button>
+          </div>
         </div>
       </div>
     </div>
