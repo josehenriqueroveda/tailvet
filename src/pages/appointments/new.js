@@ -23,6 +23,7 @@ export default function NewAppointment() {
     diagnosis: "",
     observations: "",
     return_date: "",
+    payment_status: "",
   });
   const [extraServices, setExtraServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
@@ -108,15 +109,33 @@ export default function NewAppointment() {
     if (!service) return;
     console.dir(service);
     const servicePrice = parseFloat(service.price) || 0;
-    setExtraServices((prev) => [...prev, service]);
+    const newService = { ...service, quantity: 1 }; // <-- incluir quantidade padrão 1
+    setExtraServices((prev) => [...prev, newService]);
     setTotalPrice((prev) => (parseFloat(prev) || 0) + servicePrice);
     setSelectedService(null);
   };
 
+  const handleQuantityChange = (index, newQuantity) => {
+    const parsedQuantity = parseInt(newQuantity, 10) || 1;
+    setExtraServices((prev) => {
+      const updatedServices = [...prev];
+      const oldQuantity = updatedServices[index].quantity;
+      const servicePrice = parseFloat(updatedServices[index].price);
+      updatedServices[index].quantity = parsedQuantity;
+      // Recalcula o total
+      setTotalPrice(
+        (total) =>
+          total - oldQuantity * servicePrice + parsedQuantity * servicePrice,
+      );
+      return updatedServices;
+    });
+  };
+
   const handleServiceRemove = (index) => {
     const serviceToRemove = extraServices[index];
+    const removeAmount = serviceToRemove.price * serviceToRemove.quantity;
     setExtraServices((prev) => prev.filter((_, i) => i !== index));
-    setTotalPrice((prev) => prev - serviceToRemove.price);
+    setTotalPrice((prev) => prev - removeAmount);
   };
 
   const handleSubmit = async (e) => {
@@ -148,6 +167,7 @@ export default function NewAppointment() {
             service_id: service.value,
             service_name: service.label,
             service_price: service.price,
+            quantity: service.quantity,
           }),
         });
       }
@@ -399,6 +419,7 @@ export default function NewAppointment() {
                 <th className="border px-4 py-2">
                   Materiais, Medicamentos e Serviços
                 </th>
+                <th className="border px-4 py-2">Quantidade</th>
                 <th className="border px-4 py-2">Preço</th>
                 <th className="border px-4 py-2">Categoria</th>
                 <th className="border px-4 py-2">Ações</th>
@@ -408,6 +429,20 @@ export default function NewAppointment() {
               {extraServices.map((service, index) => (
                 <tr key={index}>
                   <td className="border px-4 py-2">{service.name || "N/A"}</td>
+                  <td className="border px-4 py-2">
+                    <div className="flex flex-col">
+                      <input
+                        type="number"
+                        min="1"
+                        placeholder="Quantidade..."
+                        value={service.quantity}
+                        onChange={(e) =>
+                          handleQuantityChange(index, e.target.value)
+                        }
+                        className="input input-bordered"
+                      />
+                    </div>
+                  </td>
                   <td className="border px-4 py-2">R${service.price}</td>
                   <td className="border px-4 py-2">
                     {service.category || "N/A"}
@@ -430,6 +465,23 @@ export default function NewAppointment() {
               <div className="stat-title">Valor total</div>
               <div className="stat-value">R${totalPrice.toFixed(2)}</div>
             </div>
+          </div>
+
+          <div className="max-w-xl mt-6">
+            <label className="block text-sm mb-2">Status de Pagamento</label>
+            <select
+              name="payment_status"
+              value={form.payment_status || ""}
+              onChange={(e) =>
+                handleInputChange("payment_status", e.target.value)
+              }
+              className="select select-bordered w-full"
+            >
+              <option value="A Pagar">A Pagar</option>
+              <option value="Pago em Dinheiro">Pago em Dinheiro</option>
+              <option value="Pago no Pix">Pago no Pix</option>
+              <option value="Pago no Cartão">Pago no Cartão</option>
+            </select>
           </div>
         </div>
 

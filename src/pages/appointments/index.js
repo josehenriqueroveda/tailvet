@@ -72,6 +72,7 @@ export default function AppointmentsList() {
             <th>Pet</th>
             <th>Tipo de Atendimento</th>
             <th>Data do Atendimento</th>
+            <th>Status de Pagamento</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -87,6 +88,7 @@ export default function AppointmentsList() {
                     timeZone: "UTC",
                   }).format(new Date(appointment.appointment_date))}
                 </td>
+                <td>{appointment.payment_status}</td>
                 <td>
                   <button
                     onClick={() =>

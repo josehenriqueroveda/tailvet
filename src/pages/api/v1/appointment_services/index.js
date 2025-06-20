@@ -43,9 +43,9 @@ async function handleGet(request, response) {
         SELECT 
           aps.*,
           s.name AS service_name,
-          s.price AS service_price,
           s.category AS service_category,
-          SUM(aps.service_price) OVER () AS total_price
+          (COALESCE(aps.quantity, 1) * s.price) AS item_total_price,
+          SUM(COALESCE(aps.quantity, 1) * s.price) OVER () AS total_price
         FROM appointment_services aps
         JOIN services s ON aps.service_id = s.id
         WHERE aps.appointment_id = $1
@@ -62,7 +62,11 @@ async function handleGet(request, response) {
   } else if (service_id) {
     const result = await database.query({
       text: `
-        SELECT aps.*, s.name AS service_name, s.price AS service_price, s.category AS service_category
+        SELECT 
+          aps.*, 
+          s.name AS service_name, 
+          s.category AS service_category,
+          (COALESCE(aps.quantity, 1) * s.price) AS item_total_price
         FROM appointment_services aps
         JOIN services s ON aps.service_id = s.id
         WHERE aps.service_id = $1
@@ -74,7 +78,11 @@ async function handleGet(request, response) {
   } else {
     const result = await database.query({
       text: `
-        SELECT aps.*, s.name AS service_name, s.price AS service_price, s.category AS service_category
+        SELECT 
+          aps.*, 
+          s.name AS service_name,
+          s.category AS service_category,
+          (COALESCE(aps.quantity, 1) * s.price) AS item_total_price
         FROM appointment_services aps
         JOIN services s ON aps.service_id = s.id
       `,
@@ -85,7 +93,7 @@ async function handleGet(request, response) {
 }
 
 async function handlePost(request, response) {
-  const { appointment_id, service_id, service_name, service_price } =
+  const { appointment_id, service_id, service_name, service_price, quantity } =
     request.body;
 
   if (
@@ -102,11 +110,11 @@ async function handlePost(request, response) {
   const result = await database.query({
     text: `
       INSERT INTO appointment_services
-      (appointment_id, service_id, service_name, service_price)
-      VALUES ($1, $2, $3, $4)
+      (appointment_id, service_id, service_name, service_price, quantity)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *
     `,
-    values: [appointment_id, service_id, service_name, service_price],
+    values: [appointment_id, service_id, service_name, service_price, quantity],
   });
 
   return response.status(201).json(result.rows[0]);

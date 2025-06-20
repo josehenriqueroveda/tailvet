@@ -95,6 +95,7 @@ async function handlePost(request, response) {
     diagnosis,
     observations,
     return_date,
+    payment_status,
   } = request.body;
 
   if (!pet_id || !appointment_type) {
@@ -106,8 +107,8 @@ async function handlePost(request, response) {
   const result = await database.query({
     text: `
       INSERT INTO appointments
-      (pet_id, appointment_date, appointment_type, main_complaint, anamnesis, temperature, weight, neurological_system, digestive_system, cardiorespiratory_system, urinary_system, diagnosis, observations, return_date)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      (pet_id, appointment_date, appointment_type, main_complaint, anamnesis, temperature, weight, neurological_system, digestive_system, cardiorespiratory_system, urinary_system, diagnosis, observations, return_date, payment_status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING *
     `,
     values: [
@@ -125,6 +126,7 @@ async function handlePost(request, response) {
       diagnosis || null,
       observations || null,
       return_date || null,
+      payment_status || null,
     ],
   });
 
@@ -132,13 +134,14 @@ async function handlePost(request, response) {
 }
 
 async function handlePut(request, response) {
-  const { id } = request.query;
+  const { id, ...updateData } = request.body; // Pega o ID do body
 
   if (!id) {
     return response.status(400).json({ error: "ID is required" });
   }
 
-  if (!Object.keys(request.body).length) {
+  if (!Object.keys(updateData).length) {
+    // Verifica se há campos para atualizar
     return response.status(400).json({ error: "No fields to update" });
   }
 
@@ -146,7 +149,7 @@ async function handlePut(request, response) {
   const values = [];
   let index = 1;
 
-  for (const [key, value] of Object.entries(request.body)) {
+  for (const [key, value] of Object.entries(updateData)) {
     updates.push(`${key} = $${index}`);
     values.push(value);
     index++;
@@ -154,26 +157,31 @@ async function handlePut(request, response) {
 
   values.push(id);
 
-  await database.query({
-    text: `UPDATE appointments SET ${updates.join(", ")} WHERE id = $${index}`,
-    values,
-  });
+  try {
+    await database.query({
+      text: `UPDATE appointments SET ${updates.join(", ")} WHERE id = $${index}`,
+      values,
+    });
 
-  const updatedAppointment = await database.query({
-    text: `
-      SELECT a.*, p.name AS pet_name, c.name AS owner_name
-      FROM appointments a
-      JOIN pets p ON a.pet_id = p.id
-      JOIN customers c ON p.owner_id = c.id
-      WHERE a.id = $1
-    `,
-    values: [id],
-  });
+    const updatedAppointment = await database.query({
+      text: `
+        SELECT a.*, p.name AS pet_name, c.name AS owner_name
+        FROM appointments a
+        JOIN pets p ON a.pet_id = p.id
+        JOIN customers c ON p.owner_id = c.id
+        WHERE a.id = $1
+      `,
+      values: [id],
+    });
 
-  return response.status(200).json({
-    message: "Appointment updated successfully",
-    appointment: updatedAppointment.rows[0],
-  });
+    return response.status(200).json({
+      message: "Appointment updated successfully",
+      appointment: updatedAppointment.rows[0],
+    });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return response.status(500).json({ error: "Internal server error" });
+  }
 }
 
 async function handleDelete(request, response) {
