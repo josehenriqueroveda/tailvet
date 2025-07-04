@@ -20,15 +20,19 @@ Here’s a sneak peek into the Tailvet platform:
 
 - **Login Page**
 A simple and secure entry point for clinic staff.
+![](https://raw.githubusercontent.com/josehenriqueroveda/josehenriqueroveda/refs/heads/master/assets/projects/tailvet-login.png)
 
 - **New Appointment Registration**
 A detailed form to capture all necessary information during a patient visit, from the chief complaint to vital signs.
+![](https://raw.githubusercontent.com/josehenriqueroveda/josehenriqueroveda/refs/heads/master/assets/projects/tailvet-appointment.png)
 
 - **New Prescription Form**
 An easy-to-use form for creating new prescriptions, allowing for multiple medications and specific instructions.
+![](https://raw.githubusercontent.com/josehenriqueroveda/josehenriqueroveda/refs/heads/master/assets/projects/tailvet-prescription.png)
 
 - **Services and Billing**
 A clear overview of the services provided during an appointment, with the total cost and payment status.
+![](https://raw.githubusercontent.com/josehenriqueroveda/josehenriqueroveda/refs/heads/master/assets/projects/tailvet-bill.png)
 
 
 ## 💻 Technologies Used
